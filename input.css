@@ -1,0 +1,217 @@
+@import "tailwindcss";
+
+/* 基础思源黑体 - 常规 */
+@font-face {
+    font-family: 'Source Han Sans SC';
+    src: url('../resources/fonts/SOURCEHANSANSSC-REGULAR.OTF') format('opentype');
+    font-weight: 400;
+}
+
+/* 基础思源黑体 - 加粗 */
+@font-face {
+    font-family: 'Source Han Sans SC';
+    src: url('../resources/fonts/SOURCEHANSANSSC-BOLD.OTF') format('opentype');
+    font-weight: 700;
+}
+
+/* 其他地区字体 */
+@font-face {
+    font-family: 'Source Han Sans JP';
+    src: url('../resources/fonts/SourceHanSans-Regular.otf') format('opentype');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Source Han Sans JP';
+    src: url('../resources/fonts/SourceHanSans-Bold.otf') format('opentype');
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'Source Han Sans TC';
+    src: url('../resources/fonts/SourceHanSansTC-Regular.otf') format('opentype');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Source Han Sans TC';
+    src: url('../resources/fonts/SourceHanSansTC-Bold.otf') format('opentype');
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'Source Han Sans KR';
+    src: url('../resources/fonts/SourceHanSansKR-Regular.otf') format('opentype');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Source Han Sans KR';
+    src: url('../resources/fonts/SourceHanSansKR-Bold.otf') format('opentype');
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('../resources/fonts/INTER-REGULAR.otf') format('opentype');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('../resources/fonts/INTER-BOLD.otf') format('opentype');
+    font-weight: 700;
+}
+
+/* 默认字体 */
+body {
+    font-family: 'Inter', 'Source Han Sans SC', sans-serif;
+    overflow: hidden;
+}
+
+/* 当 <html lang="ja-JP"> 时应用 */
+html:lang(ja-JP) body {
+    font-family: 'Inter', 'Source Han Sans JP', 'Source Han Sans SC', sans-serif;
+}
+
+/* 当 <html lang="zh-TW"> 或 <html lang="zh-HK"> 时应用 */
+html:lang(zh-TW) body,
+html:lang(zh-HK) body {
+    font-family: 'Inter', 'Source Han Sans TC', 'Source Han Sans SC', sans-serif;
+}
+
+/* 当 <html lang="ko-KR"> 时应用 */
+html:lang(ko-KR) body {
+    font-family: 'Inter', 'Source Han Sans KR', 'Source Han Sans SC', sans-serif;
+}
+
+/* 激活 Overlay 时的显示 */
+#langOverlay.active {
+    display: flex;
+}
+
+/* 激活语言项时的视觉反馈 */
+.lang-item.active span {
+    color: white;
+}
+
+/* 容器变灰效果 (当弹窗出现时，主界面变模糊/深色) */
+.tvm-container.lang-mode {
+    filter: blur(4px) brightness(0.8);
+    pointer-events: none; /* 防止弹窗时还能点到背景 */
+}
+
+/* 弹窗主体 */
+#langOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none; /* 隐藏时点击穿透 */
+    transition: 
+        opacity 0.4s ease,
+        background-color 0.4s ease,
+        backdrop-filter 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* 激活遮罩 */
+#langOverlay.active {
+    opacity: 1;
+    pointer-events: auto;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* 模态框主体：默认向下偏移 */
+#langModal {
+    position: relative;
+    /* 初始位置：向下偏移 10% 并透明 */
+    transform: translateY(10%); 
+    opacity: 0;
+    transition: 
+        transform 0.5s cubic-bezier(0.34, 1.5, 0.64, 1), 
+        opacity 0.5s ease;
+}
+
+/* 遮罩激活时，模态框向上弹出 */
+#langOverlay.active #langModal {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* 模糊背景 */
+.tvm-container.lang-mode {
+    pointer-events: none;
+}
+
+/* 主内容区负责裁剪和尺寸 */
+.main-content-area {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    overflow: hidden;
+    background-color: #f3f4f6;
+}
+
+/* 1. 基础状态：绝对定位，默认透明并隐藏 */
+.tvm-body {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+/* 2. 动画过渡类 */
+.screen-transition {
+    visibility: visible !important; 
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.screen-left {
+    transform: translateX(-100%) !important;
+    opacity: 0 !important;
+}
+
+.screen-right {
+    transform: translateX(100%) !important;
+    opacity: 0 !important;
+}
+
+/* 4. 中心状态 */
+.screen-center {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: translateX(0) !important;
+    z-index: 10;
+}
+
+/* 强制清除 display: none */
+.tvm-body:not(.hidden) {
+    display: flex !important;
+}
+.hidden { display: none !important; }
+
+/* 解决底部露白：强制主区域背景色一致或溢出隐藏 */
+.main-content-area {
+    position: relative;
+    overflow: hidden;
+    background-color: #f3f4f6; /* bg-gray-100 的色值 */
+}
+
+#screen-by-distance,
+#screen-by-amount {
+    position: absolute;
+    inset: 0;
+}
