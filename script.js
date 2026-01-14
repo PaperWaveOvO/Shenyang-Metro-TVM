@@ -177,46 +177,39 @@ document.addEventListener("DOMContentLoaded", () => {
             { sel: '.button-top-up .bg', r: regularRadius },
             { sel: '.button-system-map .bg', r: regularRadius },
             { sel: '#langModal > svg > .bg', r: regularRadius + 1.5 * vw },
-            { sel: '.lang-item[data-lang="en-US"] .bg', r: { tl: regularRadius, bl: 0, tr: regularRadius, br: 0 } },
-            { sel: '.lang-item[data-lang="zh-TW"] .bg', r: { tl: 0, bl: regularRadius, tr: 0, br: regularRadius } },
+            // { sel: '.button-line-item', r: regularRadius, isDirectClip: true },
+            { sel: '.button-language .bg', r: regularRadius },
+            { sel: '.button-top-up .bg', r: regularRadius },
+            { sel: '#langModal > svg > .bg', r: 3.1 * vw },
+            { sel: '.lang-item .bg', r: regularRadius },
             { sel: '.lang-confirm .bg', r: regularRadius },
             { sel: '.lang-cancel .bg', r: regularRadius },
-            { sel: '.lang-item:not([data-lang="en-US"]):not([data-lang="zh-TW"]) .bg', r: 0 },
             { sel: ".button-reset-by-distance .bg", r: regularRadius },
             { sel: ".button-pay-by-distance .bg", r: regularRadius },
             { sel: ".btn-counter .bg", r: regularRadius },
             { sel: ".btn-quick .bg", r: regularRadius },
-            { sel: '.button-line-item[data-line="1"] .bg', r: { tl: regularRadius, bl: 0, tr: regularRadius, br: 0 } },
-            { sel: '.button-line-item[data-line="10"] .bg', r: { tl: 0, bl: regularRadius, tr: 0, br: regularRadius } },
-            { sel: '.button-line-item:not([data-line="1"]):not([data-line="10"]) .bg', r: 0 },
         ];
 
         configs.forEach(cfg => {
-            document.querySelectorAll(cfg.sel).forEach(pathEl => {
-                const container = pathEl.closest('.station-name-bg, .tvm-button, .lang-modal, .btn-quick, .btn-counter, .lang-item');
-                const svg = pathEl.closest('svg');
-
-                if (!container || !svg) return;
-
-                const rect = container.getBoundingClientRect();
-                let w = rect.width;
-                let h = rect.height;
-
+            document.querySelectorAll(cfg.sel).forEach(el => {
+                const rect = el.getBoundingClientRect();
+                let w = rect.width, h = rect.height;
                 if (w === 0 || h === 0) return;
 
-                // 【核心修复 1】强制 SVG 允许溢出显示，防止边缘切断
-                svg.style.overflow = 'visible';
+                const pathData = getSmoothRectPath(w, h, cfg.r);
 
-                if (container.classList.contains('station-name-bg')) {
-                    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-                    pathEl.setAttribute('d', getSmoothRectPath(w, h, cfg.r));
+                if (cfg.isDirectClip) {
+                    // 如果设置了 isDirectClip，直接把形状应用到元素的 clip-path 上
+                    // 这样你就可以直接在 HTML 里写 bg-[#ff0000] 了
+                    el.style.clipPath = `path('${pathData}')`;
                 } else {
-                    let drawH = h, viewBoxY = 0;
-
-                    svg.setAttribute('viewBox', `0 ${viewBoxY} ${w} ${h}`);
-                    
-                    // 绘制时依然使用原始宽度 w
-                    pathEl.setAttribute('d', getSmoothRectPath(w, drawH, cfg.r));
+                    // 否则依然寻找内部的 SVG 路径（用于处理复杂的裁切逻辑）
+                    const svg = el.querySelector('svg') || el.closest('svg');
+                    if (svg) {
+                        svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+                        const path = el.querySelector('path.bg') || el;
+                        if (path.tagName === 'path') path.setAttribute('d', pathData);
+                    }
                 }
             });
         });
@@ -289,13 +282,20 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(selector).forEach(btn => {
             btn.addEventListener('click', () => {
                 const group = btn.closest('#ticketModeGroup') || btn.closest('.tvm-panel-left') || btn.closest('.lang-options-list');
-                const groupButtons = group ? group.querySelectorAll('.tvm-button, .lang-item') : [btn];
+                const groupButtons = group ? group.querySelectorAll(selector) : [btn];
 
                 groupButtons.forEach(b => {
                     b.classList.remove('active');
                     const path = b.querySelector('path.bg');
                     const span = b.querySelector('span');
-                    if (path) path.style.fill = '#e8e8e8';
+
+                    // 核心逻辑：判断是用 SVG 还是普通背景
+                    if (path) {
+                        path.style.fill = '#e8e8e8'; // 还原 SVG 灰色
+                    } else {
+                        b.style.backgroundColor = '#e8e8e8'; // 还原 CSS 灰色
+                    }
+
                     if (span) span.style.color = 'black';
                 });
 
@@ -304,7 +304,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 const span = btn.querySelector('span');
                 const activeColor = btn.getAttribute('data-active-color') || defaultColor;
 
-                if (path) path.style.fill = activeColor;
+                if (path) {
+                    path.style.fill = activeColor; // 填充 SVG 激活色
+                } else {
+                    btn.style.backgroundColor = activeColor; // 填充 CSS 激活色
+                }
+
                 if (span) span.style.color = 'white';
 
                 if (btn.dataset.mode) switchScreen(btn.dataset.mode);
