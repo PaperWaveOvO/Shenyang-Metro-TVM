@@ -213,9 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 } else {
                     let drawH = h, viewBoxY = 0;
 
-                    // 【核心修复 2】在 viewBox 宽度上增加 1px 的余量 (w + 1)
-                    // 这样可以确保最右侧的曲线能够完整渲染
-                    svg.setAttribute('viewBox', `0 ${viewBoxY} ${w + 1} ${h}`);
+                    svg.setAttribute('viewBox', `0 ${viewBoxY} ${w} ${h}`);
                     
                     // 绘制时依然使用原始宽度 w
                     pathEl.setAttribute('d', getSmoothRectPath(w, drawH, cfg.r));
