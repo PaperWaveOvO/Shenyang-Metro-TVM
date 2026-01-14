@@ -3,63 +3,63 @@
 /* 基础思源黑体 - 常规 */
 @font-face {
     font-family: 'Source Han Sans SC';
-    src: url('../resources/fonts/SOURCEHANSANSSC-REGULAR.OTF') format('opentype');
+    src: url('../resources/fonts/SOURCEHANSANSSC-REGULAR.woff2') format('opentype');
     font-weight: 400;
 }
 
 /* 基础思源黑体 - 加粗 */
 @font-face {
     font-family: 'Source Han Sans SC';
-    src: url('../resources/fonts/SOURCEHANSANSSC-BOLD.OTF') format('opentype');
+    src: url('../resources/fonts/SOURCEHANSANSSC-BOLD.woff2') format('opentype');
     font-weight: 700;
 }
 
 /* 其他地区字体 */
 @font-face {
     font-family: 'Source Han Sans JP';
-    src: url('../resources/fonts/SourceHanSans-Regular.otf') format('opentype');
+    src: url('../resources/fonts/SourceHanSans-Regular.woff2') format('opentype');
     font-weight: 400;
 }
 
 @font-face {
     font-family: 'Source Han Sans JP';
-    src: url('../resources/fonts/SourceHanSans-Bold.otf') format('opentype');
+    src: url('../resources/fonts/SourceHanSans-Bold.woff2') format('opentype');
     font-weight: 700;
 }
 
 @font-face {
     font-family: 'Source Han Sans TC';
-    src: url('../resources/fonts/SourceHanSansTC-Regular.otf') format('opentype');
+    src: url('../resources/fonts/SourceHanSansTC-Regular.woff2') format('opentype');
     font-weight: 400;
 }
 
 @font-face {
     font-family: 'Source Han Sans TC';
-    src: url('../resources/fonts/SourceHanSansTC-Bold.otf') format('opentype');
+    src: url('../resources/fonts/SourceHanSansTC-Bold.woff2') format('opentype');
     font-weight: 700;
 }
 
 @font-face {
     font-family: 'Source Han Sans KR';
-    src: url('../resources/fonts/SourceHanSansKR-Regular.otf') format('opentype');
+    src: url('../resources/fonts/SourceHanSansKR-Regular.woff2') format('opentype');
     font-weight: 400;
 }
 
 @font-face {
     font-family: 'Source Han Sans KR';
-    src: url('../resources/fonts/SourceHanSansKR-Bold.otf') format('opentype');
+    src: url('../resources/fonts/SourceHanSansKR-Bold.woff2') format('opentype');
     font-weight: 700;
 }
 
 @font-face {
     font-family: 'Inter';
-    src: url('../resources/fonts/INTER-REGULAR.otf') format('opentype');
+    src: url('../resources/fonts/INTER-REGULAR.woff2') format('opentype');
     font-weight: 400;
 }
 
 @font-face {
     font-family: 'Inter';
-    src: url('../resources/fonts/INTER-BOLD.otf') format('opentype');
+    src: url('../resources/fonts/INTER-BOLD.woff2') format('opentype');
     font-weight: 700;
 }
 
