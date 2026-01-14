@@ -176,24 +176,23 @@ document.addEventListener("DOMContentLoaded", () => {
             { sel: '.button-language .bg', r: regularRadius },
             { sel: '.button-top-up .bg', r: regularRadius },
             { sel: '.button-system-map .bg', r: regularRadius },
-            { sel: '#langModal > svg > .bg', r: 3.1 * vw },
-            { sel: '.lang-item[data-lang="en-US"] .bg', r: regularRadius },
-            { sel: '.lang-item[data-lang="zh-TW"] .bg', r: regularRadius },
+            { sel: '#langModal > svg > .bg', r: regularRadius + 1.5 * vw },
+            { sel: '.lang-item[data-lang="en-US"] .bg', r: { tl: regularRadius, bl: 0, tr: regularRadius, br: 0 } },
+            { sel: '.lang-item[data-lang="zh-TW"] .bg', r: { tl: 0, bl: regularRadius, tr: 0, br: regularRadius } },
             { sel: '.lang-confirm .bg', r: regularRadius },
             { sel: '.lang-cancel .bg', r: regularRadius },
             { sel: '.lang-item:not([data-lang="en-US"]):not([data-lang="zh-TW"]) .bg', r: 0 },
             { sel: ".button-reset-by-distance .bg", r: regularRadius },
             { sel: ".button-pay-by-distance .bg", r: regularRadius },
+            { sel: ".btn-counter .bg", r: regularRadius },
             { sel: ".btn-quick .bg", r: regularRadius },
-            { sel: ".btn-counter .bg", r: 1.6 * vw },
-            { sel: '.button-line-item[data-line="1"] .bg', r: 1.6 * vw },
-            { sel: '.button-line-item[data-line="10"] .bg', r: 1.6 * vw },
+            { sel: '.button-line-item[data-line="1"] .bg', r: { tl: regularRadius, bl: 0, tr: regularRadius, br: 0 } },
+            { sel: '.button-line-item[data-line="10"] .bg', r: { tl: 0, bl: regularRadius, tr: 0, br: regularRadius } },
             { sel: '.button-line-item:not([data-line="1"]):not([data-line="10"]) .bg', r: 0 },
         ];
 
         configs.forEach(cfg => {
             document.querySelectorAll(cfg.sel).forEach(pathEl => {
-                // 修复点1：合并选择器字符串
                 const container = pathEl.closest('.station-name-bg, .tvm-button, .lang-modal, .btn-quick, .btn-counter, .lang-item');
                 const svg = pathEl.closest('svg');
 
@@ -205,25 +204,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (w === 0 || h === 0) return;
 
-                // 修复点2：理清绘制逻辑
+                // 【核心修复 1】强制 SVG 允许溢出显示，防止边缘切断
+                svg.style.overflow = 'visible';
+
                 if (container.classList.contains('station-name-bg')) {
-                    // 站名胶囊：全屏绘制
                     svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
                     pathEl.setAttribute('d', getSmoothRectPath(w, h, cfg.r));
                 } else {
-                    // 普通按钮：处理可能的上下裁切（针对列表首尾项）
                     let drawH = h, viewBoxY = 0;
 
-                    // 针对语言列表或线路列表的首尾项做 Diamond 处理
-                    if (container.dataset.lang === 'en-US' || container.dataset.line === '1') {
-                        drawH = h * 2.5;
-                        viewBoxY = 0;
-                    } else if (container.dataset.lang === 'zh-TW' || container.dataset.line === '10') {
-                        drawH = h * 2.5;
-                        viewBoxY = drawH - h;
-                    }
-
-                    svg.setAttribute('viewBox', `0 ${viewBoxY} ${w} ${h}`);
+                    // 【核心修复 2】在 viewBox 宽度上增加 1px 的余量 (w + 1)
+                    // 这样可以确保最右侧的曲线能够完整渲染
+                    svg.setAttribute('viewBox', `0 ${viewBoxY} ${w + 1} ${h}`);
+                    
+                    // 绘制时依然使用原始宽度 w
                     pathEl.setAttribute('d', getSmoothRectPath(w, drawH, cfg.r));
                 }
             });
@@ -419,6 +413,36 @@ document.addEventListener("DOMContentLoaded", () => {
         if (defaultMenuBtn) {
             defaultMenuBtn.click();
         }
+
+        if (langBtn) {
+            langBtn.addEventListener('click', openModal);
+        }
+
+        // 【新增：绑定弹窗内的确定和取消按钮】
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', () => closeModal(true));
+        }
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', () => closeModal(false));
+        }
+
+        document.addEventListener('keydown', (e) => {
+            // 检查是否按下了 ESC 键
+            if (e.key === 'Escape' || e.key === 'Esc') {
+                // 检查模态框是否正处于激活状态
+                if (langOverlay && langOverlay.classList.contains('active')) {
+                    console.log("检测到 ESC 键，正在关闭弹窗...");
+                    closeModal(false); // 执行取消逻辑
+                }
+            }
+        });
+
+        // 【新增：绑定语言选项的临时高亮逻辑】
+        document.querySelectorAll('.lang-item').forEach(item => {
+            item.addEventListener('click', () => {
+                setTempHighlight(item.dataset.lang);
+            });
+        });
 
         // 5. 其他常规初始化
         loadTranslations(originalLang);
