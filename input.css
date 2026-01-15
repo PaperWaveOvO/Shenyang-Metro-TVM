@@ -132,6 +132,7 @@ html:lang(ko-KR) body {
     transition: 
         transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), 
         opacity 0.4s ease;
+    overflow: visible;
 }
 
 /* 遮罩激活时，模态框向上弹出 */
