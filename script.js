@@ -164,12 +164,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (tvmContainer) {
             const rect = tvmContainer.getBoundingClientRect();
-            // 取整：消除亚像素导致的边缘模糊缝隙
-            const w = Math.floor(rect.width);
-            const h = Math.floor(rect.height);
-            if (w > 0) {
-                tvmContainer.style.clipPath = `path('${getSmoothRectPath(w, h, 1.5 * vw)}')`;
-            }
+
+            const SAFE = Math.ceil(window.devicePixelRatio); // 通常 1~2
+
+            const w = Math.floor(rect.width) + SAFE * 2;
+            const h = Math.floor(rect.height) + SAFE * 2;
+
+            tvmContainer.style.clipPath =
+                `path('M ${SAFE} ${SAFE} ${getSmoothRectPath(rect.width, rect.height, 1.5 * vw)}')`;
         }
 
         const configs = [
