@@ -158,69 +158,93 @@ document.addEventListener("DOMContentLoaded", () => {
     // 3. 布局应用函数
     // ==========================================
     function applyPaths() {
-        const vw = window.innerWidth / 100;
-        const regularRadius = 1.6 * vw;
+    const vw = window.innerWidth / 100;
+    const regularRadius = 1.5 * vw;
 
-        // 1. 处理主容器裁切
-        if (tvmContainer) {
-            const rect = tvmContainer.getBoundingClientRect();
-            if (rect.width > 0) {
-                tvmContainer.style.clipPath = `path('${getSmoothRectPath(rect.width, rect.height, 1.5 * vw)}')`;
-            }
+    // 是否开启首尾项 Diamond 伪增高逻辑（目前保持关闭）
+    const ENABLE_LIST_EXTENSION = false; 
+
+    // 1. 处理主容器裁切
+    if (tvmContainer) {
+        const rect = tvmContainer.getBoundingClientRect();
+        // 使用 Math.round 确保像素对齐，防止出现 0.5px 的白边
+        const w = Math.round(rect.width);
+        const h = Math.round(rect.height);
+        if (w > 0) {
+            tvmContainer.style.clipPath = `path('${getSmoothRectPath(w, h, 1.5 * vw)}')`;
         }
-
-        const configs = [
-            { sel: '.station-name-bg .bg', r: 100 * vw },
-            { sel: '.button-by-distance .bg', r: { tl: regularRadius, bl: regularRadius, tr: 0, br: 0 } },
-            { sel: '.button-by-fare .bg', r: { tr: regularRadius, br: regularRadius, tl: 0, bl: 0 } },
-            { sel: '.button-language .bg', r: regularRadius },
-            { sel: '.button-top-up .bg', r: regularRadius },
-            { sel: '.button-system-map .bg', r: regularRadius },
-            { sel: '#langModal > svg > .bg', r: regularRadius + 1.5 * vw },
-            { sel: '.lang-item[data-lang="en-US"] .bg', r: { tl: regularRadius, bl: 0, tr: regularRadius, br: 0 } },
-            { sel: '.lang-item[data-lang="zh-TW"] .bg', r: { tl: 0, bl: regularRadius, tr: 0, br: regularRadius } },
-            { sel: '.lang-confirm .bg', r: regularRadius },
-            { sel: '.lang-cancel .bg', r: regularRadius },
-            { sel: '.lang-item:not([data-lang="en-US"]):not([data-lang="zh-TW"]) .bg', r: 0 },
-            { sel: ".button-reset-by-distance .bg", r: regularRadius },
-            { sel: ".button-pay-by-distance .bg", r: regularRadius },
-            { sel: ".btn-counter .bg", r: regularRadius },
-            { sel: ".btn-quick .bg", r: regularRadius },
-            { sel: '.button-line-item[data-line="1"] .bg', r: { tl: regularRadius, bl: 0, tr: regularRadius, br: 0 } },
-            { sel: '.button-line-item[data-line="10"] .bg', r: { tl: 0, bl: regularRadius, tr: 0, br: regularRadius } },
-            { sel: '.button-line-item:not([data-line="1"]):not([data-line="10"]) .bg', r: 0 },
-        ];
-
-        configs.forEach(cfg => {
-            document.querySelectorAll(cfg.sel).forEach(pathEl => {
-                const container = pathEl.closest('.station-name-bg, .tvm-button, .lang-modal, .btn-quick, .btn-counter, .lang-item');
-                const svg = pathEl.closest('svg');
-
-                if (!container || !svg) return;
-
-                const rect = container.getBoundingClientRect();
-                let w = rect.width;
-                let h = rect.height;
-
-                if (w === 0 || h === 0) return;
-
-                // 【核心修复 1】强制 SVG 允许溢出显示，防止边缘切断
-                svg.style.overflow = 'visible';
-
-                if (container.classList.contains('station-name-bg')) {
-                    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-                    pathEl.setAttribute('d', getSmoothRectPath(w, h, cfg.r));
-                } else {
-                    let drawH = h, viewBoxY = 0;
-
-                    svg.setAttribute('viewBox', `0 ${viewBoxY} ${w} ${h}`);
-                    
-                    // 绘制时依然使用原始宽度 w
-                    pathEl.setAttribute('d', getSmoothRectPath(w, drawH, cfg.r));
-                }
-            });
-        });
     }
+
+    const configs = [
+        { sel: '.station-name-bg .bg', r: 2.1 * vw },
+        { sel: '.button-by-distance .bg', r: { tl: regularRadius, bl: regularRadius, tr: 0, br: 0 } },
+        { sel: '.button-by-fare .bg', r: { tr: regularRadius, br: regularRadius, tl: 0, bl: 0 } },
+        { sel: '.button-language .bg', r: regularRadius },
+        { sel: '.button-top-up .bg', r: regularRadius },
+        { sel: '.button-system-map .bg', r: regularRadius },
+        { sel: '.button-line-item[data-line="1"] .bg', r: { tl: regularRadius, bl: 0, tr: regularRadius, br: 0 } },
+        { sel: '.button-line-item[data-line="10"] .bg', r: { tl: 0, bl: regularRadius, tr: 0, br: regularRadius } },
+        { sel: '.button-line-item:not([data-line="1"]):not([data-line="10"]) .bg', r: 0 },
+        { sel: '#langModal > svg > .bg', r: 3 * vw },
+        // 列表项配置
+        { sel: '.lang-item[data-lang="en-US"] .bg', r: { tl: regularRadius, tr: regularRadius, bl: 0, br: 0 }, type: 'list-top' },
+        { sel: '.lang-item[data-lang="zh-TW"] .bg', r: { bl: regularRadius, br: regularRadius, tl: 0, tr: 0 }, type: 'list-bottom' },
+        { sel: '.lang-item:not([data-lang="en-US"]):not([data-lang="zh-TW"]) .bg', r: 0, type: 'list-mid' },
+        { sel: '.lang-confirm .bg', r: regularRadius },
+        { sel: '.lang-cancel .bg', r: regularRadius },
+        { sel: ".button-reset-by-distance .bg", r: regularRadius },
+        { sel: ".button-pay-by-distance .bg", r: regularRadius },
+        { sel: ".btn-counter .bg", r: regularRadius },
+        { sel: ".btn-quick .bg", r: regularRadius }
+    ];
+
+    configs.forEach(cfg => {
+        document.querySelectorAll(cfg.sel).forEach(pathEl => {
+            const container = pathEl.closest('.station-name-bg, .tvm-button, .lang-modal, .btn-quick, .btn-counter, .lang-item');
+            const svg = pathEl.closest('svg');
+
+            if (!container || !svg) return;
+
+            const rect = container.getBoundingClientRect();
+            // 核心修复点：使用 Math.round() 保证 SVG 坐标与物理像素 1:1
+            let w = Math.round(rect.width);
+            let h = Math.round(rect.height);
+
+            if (w < 1 || h < 1) return;
+
+            let drawH = h;
+            let viewBoxY = 0;
+
+            if (ENABLE_LIST_EXTENSION) {
+                if (cfg.type === 'list-top') {
+                    drawH = h * 2.5;
+                    viewBoxY = 0;
+                } else if (cfg.type === 'list-bottom') {
+                    drawH = h * 2.5;
+                    viewBoxY = drawH - h;
+                }
+            }
+
+            // 优化 1：ViewBox 严丝合缝，不加 buffer，消除缩放感
+            svg.setAttribute('viewBox', `0 ${viewBoxY} ${w} ${h}`);
+            
+            // 优化 2：强制 SVG 溢出可见。
+            // 这样边缘那 0.1px 的抗锯齿像素会渲染到容器外，但不会被切断，也不会导致图形缩小。
+            svg.style.overflow = 'visible';
+            svg.style.width = '100%';
+            svg.style.height = '100%';
+            svg.style.position = 'absolute';
+            svg.style.top = '0';
+            svg.style.left = '0';
+
+            // 优化 3：针对不同浏览器优化路径渲染模式
+            pathEl.style.shapeRendering = 'geometricPrecision';
+
+            // 绘制
+            pathEl.setAttribute('d', getSmoothRectPath(w, drawH, cfg.r));
+        });
+    });
+}
 
     // ==========================================
     // 4. 界面切换
