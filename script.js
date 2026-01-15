@@ -160,20 +160,20 @@ document.addEventListener("DOMContentLoaded", () => {
     function applyPaths() {
         const vw = window.innerWidth / 100;
         const regularRadius = 1.5 * vw;
-
-        // 是否开启首尾项 Diamond 伪增高逻辑（目前保持关闭）
         const ENABLE_LIST_EXTENSION = false;
 
         // 1. 处理主容器裁切
         if (tvmContainer) {
             const rect = tvmContainer.getBoundingClientRect();
-            // 使用 Math.round 确保像素对齐，防止出现 0.5px 的白边
             const w = Math.round(rect.width);
             const h = Math.round(rect.height);
             if (w > 0) {
                 tvmContainer.style.clipPath = `path('${getSmoothRectPath(w, h, 1.5 * vw)}')`;
             }
         }
+
+        // 补偿值：1px 足够解决手机端的抗锯齿切边问题，且不会影响布局
+        const pad = 1;
 
         const configs = [
             { sel: '.station-name-bg .bg', r: 2.1 * vw },
@@ -205,7 +205,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!container || !svg) return;
 
                 const rect = container.getBoundingClientRect();
-                // 核心修复点：使用 Math.round() 保证 SVG 坐标与物理像素 1:1
                 let w = Math.round(rect.width);
                 let h = Math.round(rect.height);
 
@@ -215,31 +214,32 @@ document.addEventListener("DOMContentLoaded", () => {
                 let viewBoxY = 0;
 
                 if (ENABLE_LIST_EXTENSION) {
-                    if (cfg.type === 'list-top') {
-                        drawH = h * 2.5;
-                        viewBoxY = 0;
-                    } else if (cfg.type === 'list-bottom') {
-                        drawH = h * 2.5;
-                        viewBoxY = drawH - h;
-                    }
+                    if (cfg.type === 'list-top') { drawH = h * 2.5; viewBoxY = 0; }
+                    else if (cfg.type === 'list-bottom') { drawH = h * 2.5; viewBoxY = drawH - h; }
                 }
 
-                // 优化 1：ViewBox 严丝合缝，不加 buffer，消除缩放感
-                svg.setAttribute('viewBox', `0 ${viewBoxY} ${w} ${h}`);
+                // --- 核心优化逻辑 ---
 
-                // 优化 2：强制 SVG 溢出可见。
-                // 这样边缘那 0.1px 的抗锯齿像素会渲染到容器外，但不会被切断，也不会导致图形缩小。
-                svg.style.overflow = 'visible';
-                svg.style.width = '100%';
-                svg.style.height = '100%';
+                // 1. 设置 ViewBox，在四个方向都多出 pad 像素的呼吸区
+                // 此时画布坐标系变大了，但 drawH 和 w 依然是原有的尺寸
+                svg.setAttribute('viewBox', `${-pad} ${viewBoxY - pad} ${w + 2 * pad} ${h + 2 * pad}`);
+
+                // 2. 物理扩容：让 SVG 标签的实际物理尺寸也变大
+                // 这样 1个 SVG 单位依然等于 1个 物理像素，解决“小了一圈”的问题
+                svg.style.width = (w + 2 * pad) + 'px';
+                svg.style.height = (h + 2 * pad) + 'px';
+
+                // 3. 归位：通过绝对定位和负 Margin 把扩出来的部分拉回去
+                // 确保 path 的 (0,0) 坐标点刚好重合在容器的 (0,0) 位置
                 svg.style.position = 'absolute';
-                svg.style.top = '0';
-                svg.style.left = '0';
+                svg.style.left = -pad + 'px';
+                svg.style.top = -pad + 'px';
 
-                // 优化 3：针对不同浏览器优化路径渲染模式
+                // 4. 辅助属性
+                svg.style.overflow = 'visible';
                 pathEl.style.shapeRendering = 'geometricPrecision';
 
-                // 绘制
+                // 绘制路径 (使用原始 w 和 drawH)
                 pathEl.setAttribute('d', getSmoothRectPath(w, drawH, cfg.r));
             });
         });
