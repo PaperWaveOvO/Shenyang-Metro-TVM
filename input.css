@@ -135,6 +135,15 @@ html:lang(ko-KR) body {
     overflow: visible;
 }
 
+#langModal svg {
+    /* 核心：即使 path 超出了 viewBox 0.5 像素，也要显示出来 */
+    overflow: visible !important; 
+    /* 确保它铺满模态框且不挡住点击 */
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
 /* 遮罩激活时，模态框向上弹出 */
 #langOverlay.active #langModal {
     transform: translateY(0);
