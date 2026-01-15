@@ -18,6 +18,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const hours = now.getHours();        // 11
     const minutes = now.getMinutes();    // 54
 
+    const isAndroidWebView =
+        /Android/i.test(navigator.userAgent) &&
+        !/Chrome\/\d+/i.test(navigator.userAgent);
+
+    if (isAndroidWebView) {
+        document.documentElement.classList.add('android-webview');
+    }
+
     let currentMode = 'distance';
     let originalLang = document.documentElement.lang || "zh-CN";
     let translations = {};
