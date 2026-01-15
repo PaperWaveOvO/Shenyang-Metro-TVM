@@ -164,16 +164,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (tvmContainer) {
             const rect = tvmContainer.getBoundingClientRect();
-            const w = Math.round(rect.width);
-            const h = Math.round(rect.height);
+            // 取整：消除亚像素导致的边缘模糊缝隙
+            const w = Math.floor(rect.width);
+            const h = Math.floor(rect.height);
             if (w > 0) {
                 tvmContainer.style.clipPath = `path('${getSmoothRectPath(w, h, 1.5 * vw)}')`;
             }
         }
-
-        // 补偿值：0.5 到 1 像素。
-        // 手机端通常是因为 0.5px 的抗锯齿被切，设为 1px 是最稳妥的“呼吸空间”。
-        const pad = 1;
 
         const configs = [
             { sel: '.station-name-bg .bg', r: 2.1 * vw },
@@ -205,9 +202,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!container || !svg) return;
 
                 const rect = container.getBoundingClientRect();
-                // 1. 获取容器的物理像素尺寸（不取整以保持精度，但在 ViewBox 中处理）
-                let w = rect.width;
-                let h = rect.height;
+                // 使用 Math.floor 确保形状填满容器且不溢出
+                let w = Math.floor(rect.width);
+                let h = Math.floor(rect.height);
 
                 if (w < 1 || h < 1) return;
 
@@ -219,26 +216,25 @@ document.addEventListener("DOMContentLoaded", () => {
                     else if (cfg.type === 'list-bottom') { drawH = h * 2.5; viewBoxY = drawH - h; }
                 }
 
-                // 2. 优化：SVG 物理尺寸强制设为 100%，不设 px，避免缩放感
+                // --- 核心修复逻辑 ---
+
+                // 1. ViewBox 严格等于容器尺寸，消除缩放感
+                svg.setAttribute('viewBox', `0 ${viewBoxY} ${w} ${h}`);
+
+                // 2. 物理尺寸保持 100%，确保坐标 1:1
                 svg.style.width = '100%';
                 svg.style.height = '100%';
                 svg.style.left = '0';
                 svg.style.top = '0';
-                svg.style.position = 'absolute';
-                svg.style.overflow = 'visible'; // 必须可见
 
-                // 3. ViewBox 策略：
-                // 我们在 ViewBox 里留出 pad，但路径绘图依然从 0,0 开始。
-                // 这样绘图区就在坐标系的中心，边缘不会碰到 ViewBox 的边界。
-                svg.setAttribute('viewBox', `${-pad} ${viewBoxY - pad} ${w + pad * 2} ${h + pad * 2}`);
+                // 3. 关键：允许 SVG 内部内容溢出到 viewBox 之外显示（抗锯齿像素）
+                svg.style.overflow = 'visible';
 
-                // 4. 路径绘图：
-                // 保持原本的 w 和 drawH
+                // 4. 渲染精度优化
                 pathEl.style.shapeRendering = 'geometricPrecision';
-                pathEl.setAttribute('d', getSmoothRectPath(w, drawH, cfg.r));
 
-                // 5. 解决手机浏览器 GPU 渲染 Bug：强制重绘
-                pathEl.style.transform = 'translateZ(0)';
+                // 绘制路径
+                pathEl.setAttribute('d', getSmoothRectPath(w, drawH, cfg.r));
             });
         });
     }
