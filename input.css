@@ -70,18 +70,18 @@ body {
 }
 
 /* 当 <html lang="ja-JP"> 时应用 */
-html:lang(ja-JP) body {
+html:lang(ja-JP) * {
     font-family: 'Inter', 'Source Han Sans JP', 'Source Han Sans SC', sans-serif;
 }
 
 /* 当 <html lang="zh-TW"> 或 <html lang="zh-HK"> 时应用 */
-html:lang(zh-TW) body,
-html:lang(zh-HK) body {
+html:lang(zh-TW) *,
+html:lang(zh-HK) * {
     font-family: 'Inter', 'Source Han Sans TC', 'Source Han Sans SC', sans-serif;
 }
 
 /* 当 <html lang="ko-KR"> 时应用 */
-html:lang(ko-KR) body {
+html:lang(ko-KR) * {
     font-family: 'Inter', 'Source Han Sans KR', 'Source Han Sans SC', sans-serif;
 }
 
