@@ -170,16 +170,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const regularRadius = 1.5 * vw;
         const ENABLE_LIST_EXTENSION = false;
 
+        // 1. 主容器裁切 (tvmContainer)
+        // 容器级裁切不需要外扩，因为它是作为遮罩使用的
         if (tvmContainer) {
             const rect = tvmContainer.getBoundingClientRect();
-
-            const SAFE = Math.ceil(window.devicePixelRatio); // 通常 1~2
-
-            const w = Math.floor(rect.width) + SAFE * 2;
-            const h = Math.floor(rect.height) + SAFE * 2;
-
-            tvmContainer.style.clipPath =
-                `path('M ${SAFE} ${SAFE} ${getSmoothRectPath(rect.width, rect.height, 1.5 * vw)}')`;
+            const w = Math.round(rect.width);
+            const h = Math.round(rect.height);
+            if (w > 0) {
+                tvmContainer.style.clipPath = `path('${getSmoothRectPath(w, h, 1.5 * vw)}')`;
+            }
         }
 
         const configs = [
@@ -204,6 +203,9 @@ document.addEventListener("DOMContentLoaded", () => {
             { sel: ".btn-quick .bg", r: regularRadius }
         ];
 
+        // 核心补丁：向外扩充 1 像素，容纳抗锯齿边缘
+        const pad = 1;
+
         configs.forEach(cfg => {
             document.querySelectorAll(cfg.sel).forEach(pathEl => {
                 const container = pathEl.closest('.station-name-bg, .tvm-button, .lang-modal, .btn-quick, .btn-counter, .lang-item');
@@ -212,9 +214,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!container || !svg) return;
 
                 const rect = container.getBoundingClientRect();
-                // 使用 Math.floor 确保形状填满容器且不溢出
-                let w = Math.floor(rect.width);
-                let h = Math.floor(rect.height);
+                // 使用 Math.round 消除亚像素模糊
+                let w = Math.round(rect.width);
+                let h = Math.round(rect.height);
 
                 if (w < 1 || h < 1) return;
 
@@ -226,25 +228,39 @@ document.addEventListener("DOMContentLoaded", () => {
                     else if (cfg.type === 'list-bottom') { drawH = h * 2.5; viewBoxY = drawH - h; }
                 }
 
-                // --- 核心修复逻辑 ---
+                // ----------------------------------------------------
+                // 终极修复逻辑：物理外扩 + 坐标回拉
+                // ----------------------------------------------------
 
-                // 1. ViewBox 严格等于容器尺寸，消除缩放感
-                svg.setAttribute('viewBox', `0 ${viewBoxY} ${w} ${h}`);
-
-                // 2. 物理尺寸保持 100%，确保坐标 1:1
-                svg.style.width = '100%';
-                svg.style.height = '100%';
-                svg.style.left = '0';
-                svg.style.top = '0';
-
-                // 3. 关键：允许 SVG 内部内容溢出到 viewBox 之外显示（抗锯齿像素）
+                // 1. 设置 SVG 样式：绝对定位
+                svg.style.position = 'absolute';
+                // 允许溢出（双重保险）
                 svg.style.overflow = 'visible';
 
-                // 4. 渲染精度优化
-                pathEl.style.shapeRendering = 'geometricPrecision';
+                // 2. 【关键步骤 A】物理尺寸变大
+                // 容器 100px -> SVG 102px
+                // 这保证了 1 SVG 单位 = 1 屏幕像素，彻底解决“变小”问题
+                svg.style.width = `${w + pad * 2}px`;
+                svg.style.height = `${h + pad * 2}px`;
 
-                // 绘制路径
+                // 3. 【关键步骤 B】位置回拉
+                // 因为 SVG 变大了，为了让里面的 (0,0) 点和容器对齐，需要往左上各拉 1px
+                svg.style.left = `-${pad}px`;
+                svg.style.top = `-${pad}px`;
+
+                // 4. 【关键步骤 C】设置 ViewBox
+                // 对应物理尺寸，坐标系也扩大到 -1 到 w+1
+                // 这样 (0,0) 点依然在画布中心，但边缘有了呼吸空间
+                svg.setAttribute('viewBox', `${-pad} ${viewBoxY - pad} ${w + pad * 2} ${h + pad * 2}`);
+
+                // 5. 渲染优化
+                pathEl.style.shapeRendering = 'geometricPrecision'; // 几何精度
+
+                // 6. 绘制路径 (使用原始 w 和 drawH)
                 pathEl.setAttribute('d', getSmoothRectPath(w, drawH, cfg.r));
+
+                // 7. 强制 GPU 渲染 (解决部分手机 WebView 渲染层级问题)
+                svg.style.transform = 'translateZ(0)';
             });
         });
     }
