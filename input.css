@@ -101,11 +101,16 @@ html:lang(ko-KR) body {
     pointer-events: none; /* 防止弹窗时还能点到背景 */
 }
 
-.tvm-button, .lang-item, .station-name-bg {
+.tvm-button, 
+.station-name-bg, 
+.lang-item, 
+.btn-quick, 
+.btn-counter {
     position: relative;
-    /* 核心修改：从 hidden 改为 visible */
-    /* 如果你担心内容溢出，可以只对 SVG 进行特殊处理 */
+    /* 必须是 visible，否则那外扩的 1px 又被切掉了 */
     overflow: visible !important; 
+    /* 某些情况下 z-index 可以帮助提升渲染层级 */
+    z-index: 1; 
 }
 
 /* 弹窗主体 */
@@ -234,6 +239,34 @@ svg {
     inset: 0;
 }
 
-.android-webview .tvm-container {
-    clip-path: none !important;
+/* 强制覆盖浏览器默认样式 */
+.tvm-button, .btn-quick, .btn-counter {
+    -webkit-appearance: none;
+    appearance: none;
+    border: none; /* 确保没有默认边框占位 */
+    outline: none;
+    position: relative;
+    overflow: visible !important;
+    z-index: 1; /* 建立层叠上下文 */
+}
+
+/* 确保 SVG 处于背景层但不会被切 */
+.tvm-button svg, .station-name-bg svg {
+    overflow: visible !important;
+    z-index: 0;
+    pointer-events: none;
+    /* 强制硬件加速，解决模糊 */
+    transform: translateZ(0); 
+    will-change: transform;
+}
+
+/* 按钮内容层级要高 */
+.tvm-button span, .tvm-button img {
+    position: relative;
+    z-index: 10;
+}
+
+/* 模态框修正 */
+#langModal {
+    overflow: visible !important;
 }
