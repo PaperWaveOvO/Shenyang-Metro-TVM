@@ -168,14 +168,13 @@ document.addEventListener("DOMContentLoaded", () => {
     function applyPaths() {
         const vw = window.innerWidth / 100;
         const regularRadius = 1.5 * vw;
-        // 列表项伪增高开关
         const ENABLE_LIST_EXTENSION = false;
 
-        // 主容器裁切
         if (tvmContainer) {
             const rect = tvmContainer.getBoundingClientRect();
-            const w = Math.round(rect.width);
-            const h = Math.round(rect.height);
+            // 取整：消除亚像素导致的边缘模糊缝隙
+            const w = Math.floor(rect.width);
+            const h = Math.floor(rect.height);
             if (w > 0) {
                 tvmContainer.style.clipPath = `path('${getSmoothRectPath(w, h, 1.5 * vw)}')`;
             }
@@ -200,76 +199,51 @@ document.addEventListener("DOMContentLoaded", () => {
             { sel: ".button-reset-by-distance .bg", r: regularRadius },
             { sel: ".button-pay-by-distance .bg", r: regularRadius },
             { sel: ".btn-counter .bg", r: regularRadius },
-            { sel: ".btn-quick .bg", r: regularRadius }
+            { sel: ".btn-quick .bg", r: regularRadius },
         ];
 
         configs.forEach(cfg => {
             document.querySelectorAll(cfg.sel).forEach(pathEl => {
-                const container = pathEl.closest('.station-name-bg, .tvm-button, .lang-modal, .btn-quick, .btn-counter, .lang-item');
+                const container = pathEl.closest('.station-name-bg, .tvm-button, .lang-modal, .btn-quick, .btn-counter, .lang-item, .distance-panel-divider');
                 const svg = pathEl.closest('svg');
 
                 if (!container || !svg) return;
 
                 const rect = container.getBoundingClientRect();
-                // 物理容器尺寸
-                let w = Math.round(rect.width);
-                let h = Math.round(rect.height);
+
+                // 修改点：宽度可以 floor，但高度建议 round，并给一个最小值 1
+                let w = Math.floor(rect.width);
+                let h = Math.max(1, Math.round(rect.height)); // 确保至少有 1 像素高
 
                 if (w < 1 || h < 1) return;
 
                 let drawH = h;
+                let viewBoxY = 0;
 
                 if (ENABLE_LIST_EXTENSION) {
-                    if (cfg.type === 'list-top') { drawH = h * 2.5; }
-                    else if (cfg.type === 'list-bottom') { drawH = h * 2.5; }
+                    if (cfg.type === 'list-top') { drawH = h * 2.5; viewBoxY = 0; }
+                    else if (cfg.type === 'list-bottom') { drawH = h * 2.5; viewBoxY = drawH - h; }
                 }
 
-                // ==========================================
-                // 核心修复逻辑：安全缩进 (Safety Inset)
-                // ==========================================
+                // --- 核心修复逻辑 ---
 
-                // 1. 设置 ViewBox 与容器 1:1 对齐 (最稳健的设置)
-                svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+                // 1. ViewBox 严格等于容器尺寸，消除缩放感
+                svg.setAttribute('viewBox', `0 ${viewBoxY} ${w} ${h}`);
+
+                // 2. 物理尺寸保持 100%，确保坐标 1:1
                 svg.style.width = '100%';
                 svg.style.height = '100%';
                 svg.style.left = '0';
                 svg.style.top = '0';
-                svg.style.transform = 'none';
+
+                // 3. 关键：允许 SVG 内部内容溢出到 viewBox 之外显示（抗锯齿像素）
                 svg.style.overflow = 'visible';
 
-                // 2. 缩减算法输入
-                // 我们告诉算法：画一个比容器小 1px 的图形
-                // 这样生成的路径坐标最大值只有 w-1, h-1
-                // 缩减量 (Inset Amount)
-                const inset = 1;
-
-                // 针对 drawH (绘制高度) 和 w (绘制宽度) 进行缩减
-                const safeW = w - (inset * 2);
-                const safeH = drawH - (inset * 2);
-
-                // 3. 生成“小一号”的路径
-                // 如果尺寸太小就不画了，防止算法报错
-                if (safeW <= 0 || safeH <= 0) return;
-
-                pathEl.setAttribute('d', getSmoothRectPath(safeW, safeH, cfg.r));
-
-                // 4. 将“小一号”的路径居中放置
-                // 通过 transform 把它往右下挪 1px
-                // 结果：左边空 1px，右边空 1px，图形绝对安全
-                pathEl.setAttribute('transform', `translate(${inset}, ${inset})`);
-
-                // 5. 视觉补偿（可选）
-                // 因为图形变小了 2px，为了不露出缝隙，我们可以加一个描边把这 2px 补回来
-                // 描边是向外扩散的，且不容易被裁切
-                const computedColor = window.getComputedStyle(pathEl).fill;
-                // 只有当填充色有效时才加描边
-                if (computedColor !== 'none') {
-                    pathEl.style.stroke = computedColor;
-                    pathEl.style.strokeWidth = `${inset * 2}px`; // 补回缩减的尺寸
-                    pathEl.style.strokeLinejoin = 'round'; // 圆角连接
-                }
-
+                // 4. 渲染精度优化
                 pathEl.style.shapeRendering = 'geometricPrecision';
+
+                // 绘制路径
+                pathEl.setAttribute('d', getSmoothRectPath(w, drawH, cfg.r));
             });
         });
     }

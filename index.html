@@ -188,195 +188,243 @@
                     <main class="tvm-main"></main>
 
                     <div class="stretch grow"></div>
+                    <aside
+                        class="tvm-panel-right w-[22vw] h-full flex flex-col p-[1.5vw] bg-white shrink-0 shadow-[0_0vw_0.8vw_rgba(0,0,0,0.15)]">
 
-                    <div class="tvm-panel-right">
-                        <div
-                            class="tvm-panel-right w-[22vw] h-full flex flex-col p-[1.5vw] bg-white shrink-0 shadow-[0_0vw_0.8vw_rgba(0,0,0,0.15)]">
+                        <div class="stretch grow"></div>
 
-                            <div class="stretch grow"></div>
+                        <div class="ticket-selection flex flex-col items-center">
+                            <div class="section-title text-[1.8vw] font-bold mb-[1vw]"
+                                data-i18n="page.main.panel.ticket_count.label">票数</div>
 
-                            <div class="ticket-selection flex flex-col items-center">
-                                <div class="section-title text-[1.8vw] font-bold mb-[1vw]"
-                                    data-i18n="page.main.panel.ticket_count.label">票数</div>
-
-                                <div class="counter-main flex items-center justify-between w-[85%] mb-[1vw]">
-                                    <button
-                                        class="btn-counter btn-minus tvm-button relative w-[4vw] h-[4vw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
-                                        data-value="-">
-                                        <svg class="absolute inset-0 w-full h-full">
-                                            <path class="bg fill-[#e8e8e8]" d="" />
-                                        </svg>
-                                        <img src="./resources/button_contents/minus.svg"
-                                            class="relative z-10 w-[1.5vw] h-[1.5vw]" alt="-">
-                                    </button>
-
-                                    <span class="count-value text-[3.5vw] font-bold" style="line-height: 1;">2</span>
-
-                                    <button
-                                        class="btn-counter btn-plus tvm-button relative w-[4vw] h-[4vw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
-                                        data-value="+">
-                                        <svg class="absolute inset-0 w-full h-full">
-                                            <path class="bg fill-[#e8e8e8]" d="" />
-                                        </svg>
-                                        <img src="./resources/button_contents/plus.svg"
-                                            class="relative z-10 w-[1.5vw] h-[1.5vw]" alt="+">
-                                    </button>
-                                </div>
-
-                                <div class="counter-quick flex gap-[1vw] w-[85%]">
-                                    <button
-                                        class="btn-quick tvm-button relative flex-1 h-[4vw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
-                                        data-value="-2">
-                                        <svg class="absolute inset-0 w-full h-full">
-                                            <path class="bg fill-[#e8e8e8]" d="" />
-                                        </svg>
-                                        <img src="./resources/button_contents/minus_2.svg"
-                                            class="relative z-10 h-[1.8vw]" alt="-2">
-                                    </button>
-
-                                    <button
-                                        class="btn-quick tvm-button relative flex-1 h-[4vw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
-                                        data-value="+2">
-                                        <svg class="absolute inset-0 w-full h-full">
-                                            <path class="bg fill-[#e8e8e8]" d="" />
-                                        </svg>
-                                        <img src="./resources/button_contents/plus_2.svg"
-                                            class="relative z-10 h-[1.8vw]" alt="+2">
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="my-[2vw] w-[14vw] mx-auto border-t-2 border-dashed border-gray-300"></div>
-
-                            <div class="fare-display flex flex-col items-center">
-                                <div class="section-title text-[1.8vw] font-bold"
-                                    data-i18n="page.main.panel.total_fare.label">应付总金额</div>
-                                <div class="price-wrapper flex items-baseline mt-[0.5vw]">
-                                    <span class="currency text-[2.5vw] font-bold">¥</span>
-                                    <span class="amount text-[3.5vw] font-bold leading-none">8</span>
-                                </div>
-                            </div>
-
-                            <div class="stretch grow"></div>
-
-                            <div class="h-[1vw]"></div>
-
-                            <div class="action-group flex flex-col gap-[1vw]">
+                            <div class="counter-main flex items-center justify-between w-[85%] mb-[1vw]">
                                 <button
-                                    class="tvm-button button-reset-by-distance relative w-full h-[4vw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90">
+                                    class="btn-counter btn-minus tvm-button relative w-[4vw] h-[4vw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
+                                    data-value="-">
                                     <svg class="absolute inset-0 w-full h-full">
                                         <path class="bg fill-[#e8e8e8]" d="" />
                                     </svg>
-                                    <span class="relative z-10 text-[1.8vw]"
-                                        data-i18n="page.main.button.reset.label">重置</span>
+                                    <img src="./resources/button_contents/minus.svg"
+                                        class="relative z-10 w-[1.5vw] h-[1.5vw]" alt="-">
+                                </button>
+
+                                <span class="count-value text-[3.5vw] font-bold" style="line-height: 1;">2</span>
+
+                                <button
+                                    class="btn-counter btn-plus tvm-button relative w-[4vw] h-[4vw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
+                                    data-value="+">
+                                    <svg class="absolute inset-0 w-full h-full">
+                                        <path class="bg fill-[#e8e8e8]" d="" />
+                                    </svg>
+                                    <img src="./resources/button_contents/plus.svg"
+                                        class="relative z-10 w-[1.5vw] h-[1.5vw]" alt="+">
+                                </button>
+                            </div>
+
+                            <div class="counter-quick flex gap-[1vw] w-[85%]">
+                                <button
+                                    class="btn-quick tvm-button relative flex-1 h-[4vw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
+                                    data-value="-2">
+                                    <svg class="absolute inset-0 w-full h-full">
+                                        <path class="bg fill-[#e8e8e8]" d="" />
+                                    </svg>
+                                    <img src="./resources/button_contents/minus_2.svg" class="relative z-10 h-[1.8vw]"
+                                        alt="-2">
                                 </button>
 
                                 <button
-                                    class="tvm-button button-pay-by-distance relative w-full h-[4vw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90">
+                                    class="btn-quick tvm-button relative flex-1 h-[4vw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
+                                    data-value="+2">
                                     <svg class="absolute inset-0 w-full h-full">
-                                        <path class="bg fill-[#2e6aff]" d="" />
+                                        <path class="bg fill-[#e8e8e8]" d="" />
                                     </svg>
-                                    <span class="relative z-10 text-[1.8vw] text-white"
-                                        data-i18n="page.main.button.pay.label">支付</span>
+                                    <img src="./resources/button_contents/plus_2.svg" class="relative z-10 h-[1.8vw]"
+                                        alt="+2">
                                 </button>
                             </div>
                         </div>
-                    </div>
+
+                        <div class="my-[2vw] w-[14vw] h-[0.3vw] bg-gray-300 mx-auto rounded-full"></div>
+
+                        <div class="fare-display flex flex-col items-center">
+                            <div class="section-title text-[1.8vw] font-bold"
+                                data-i18n="page.main.panel.total_fare.label">应付总金额</div>
+                            <div class="price-wrapper flex items-baseline mt-[0.5vw]">
+                                <span class="currency text-[2.5vw] font-bold">¥</span>
+                                <span class="amount text-[3.5vw] font-bold leading-none">8</span>
+                            </div>
+                        </div>
+
+                        <div class="stretch grow"></div>
+
+                        <div class="h-[1vw]"></div>
+
+                        <div class="action-group flex flex-col gap-[1vw]">
+                            <button
+                                class="tvm-button button-reset-by-distance relative w-full h-[4vw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90">
+                                <svg class="absolute inset-0 w-full h-full">
+                                    <path class="bg fill-[#e8e8e8]" d="" />
+                                </svg>
+                                <span class="relative z-10 text-[1.8vw]"
+                                    data-i18n="page.main.button.reset.label">重置</span>
+                            </button>
+
+                            <button
+                                class="tvm-button button-pay-by-distance relative w-full h-[4vw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90">
+                                <svg class="absolute inset-0 w-full h-full">
+                                    <path class="bg fill-[#2e6aff]" d="" />
+                                </svg>
+                                <span class="relative z-10 text-[1.8vw] text-white"
+                                    data-i18n="page.main.button.pay.label">支付</span>
+                            </button>
+                        </div>
+                    </aside>
                 </div>
                 <div id="screen-by-amount" class="tvm-body flex-1 items-center justify-center bg-gray-100">
-                    <h1 class="text-[3vw] font-bold text-black">按金额购票界面</h1>
-                </div>
-            </div>
-        </div>
-        <div class="modal-overlay fixed inset-0 z-100 items-center justify-center bg-black/60 backdrop-blur-sm transition-all duration-300"
-            id="langOverlay">
-            <div class="lang-modal relative w-[44vw] z-101 p-[1.5vw] flex flex-col items-center overflow-hidden"
-                id="langModal">
-                <svg class="absolute inset-0 w-full h-full pointer-events-none fill-white">
-                    <path class="bg" d="" />
-                </svg>
+                    <div class="ticket-selection flex flex-col items-center w-[22vw] p-[1.5vw]">
+                        <div class="section-title text-[1.8vw] font-bold mb-[1vw]"
+                            data-i18n="page.main.panel.ticket_count.label">票数
+                        </div>
 
-                <div class="modal-content relative z-10 w-full flex flex-col items-center">
-                    <h2 class="text-[1.8vw] font-bold text-gray-800 mb-[2vw]" data-i18n="modal.language.title">
-                        选择语言 / Select language
-                    </h2>
+                        <div class="counter-main flex items-center justify-between w-[85%] mb-[1vw]">
+                            <button
+                                class="btn-counter btn-minus tvm-button relative w-[4vw] h-[4vw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
+                                data-value="-">
+                                <svg class="absolute inset-0 w-full h-full">
+                                    <path class="bg fill-[#e8e8e8]" d="" />
+                                </svg>
+                                <img src="./resources/button_contents/minus.svg"
+                                    class="relative z-10 w-[1.5vw] h-[1.5vw]" alt="-">
+                            </button>
 
-                    <div class="lang-options-list w-full flex flex-col gap-[0.3vw]">
+                            <span class="count-value text-[3.5vw] font-bold" style="line-height: 1;">2</span>
 
-                        <button
-                            class="tvm-button lang-item relative w-full h-[4vw] flex items-center justify-center transition-all duration-300 hover:brightness-95 active:brightness-90 cursor-pointer"
-                            data-lang="en-US">
-                            <svg class="absolute inset-0 w-full h-full">
-                                <path class="bg fill-[#e8e8e8] transition-colors duration-300" d="" />
-                            </svg>
-                            <span class="relative z-10 text-[1.8vw] transition-colors duration-300" lang="en-US"
-                                style="font-family: 'Inter', 'Source Han Sans SC', sans-serif;">English</span>
-                        </button>
+                            <button
+                                class="btn-counter btn-plus tvm-button relative w-[4vw] h-[4vw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
+                                data-value="+">
+                                <svg class="absolute inset-0 w-full h-full">
+                                    <path class="bg fill-[#e8e8e8]" d="" />
+                                </svg>
+                                <img src="./resources/button_contents/plus.svg"
+                                    class="relative z-10 w-[1.5vw] h-[1.5vw]" alt="+">
+                            </button>
+                        </div>
 
-                        <button
-                            class="tvm-button lang-item relative w-full h-[4vw] flex items-center justify-center transition-all duration-300 hover:brightness-95 active:brightness-90 cursor-pointer"
-                            data-lang="ja-JP">
-                            <svg class="absolute inset-0 w-full h-full">
-                                <path class="bg fill-[#e8e8e8] transition-colors duration-300" d="" />
-                            </svg>
-                            <span class="relative z-10 text-[1.8vw] transition-colors duration-300" lang="ja-JP"
-                                style="font-family: 'Inter', 'Source Han Sans JP', 'Source Han Sans SC', sans-serif;">日本語</span>
-                        </button>
+                        <div class="counter-quick flex gap-[1vw] w-[85%]">
+                            <button
+                                class="btn-quick tvm-button relative flex-1 h-[4vw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
+                                data-value="-2">
+                                <svg class="absolute inset-0 w-full h-full">
+                                    <path class="bg fill-[#e8e8e8]" d="" />
+                                </svg>
+                                <img src="./resources/button_contents/minus_2.svg" class="relative z-10 h-[1.8vw]"
+                                    alt="-2">
+                            </button>
 
-                        <button
-                            class="tvm-button lang-item relative w-full h-[4vw] flex items-center justify-center transition-all duration-300 hover:brightness-95 active:brightness-90 cursor-pointer"
-                            data-lang="ko-KR">
-                            <svg class="absolute inset-0 w-full h-full">
-                                <path class="bg fill-[#e8e8e8] transition-colors duration-300" d="" />
-                            </svg>
-                            <span class="relative z-10 text-[1.8vw] transition-colors duration-300" lang="ko-KR"
-                                style="font-family: 'Inter', 'Source Han Sans KR', 'Source Han Sans SC', sans-serif;">한국어</span>
-                        </button>
-
-                        <button
-                            class="tvm-button lang-item active relative w-full h-[4vw] flex items-center justify-center transition-all duration-300 hover:brightness-95 active:brightness-90 cursor-pointer"
-                            data-lang="zh-CN">
-                            <svg class="absolute inset-0 w-full h-full">
-                                <path class="bg fill-[#2e6aff] transition-colors duration-300" d="" />
-                            </svg>
-                            <span class="relative z-10 text-[1.8vw] text-white transition-colors duration-300"
-                                lang="zh-CN" style="font-family: 'Inter', 'Source Han Sans SC', sans-serif;">简体中文</span>
-                        </button>
-
-                        <button
-                            class="tvm-button lang-item relative w-full h-[4vw] flex items-center justify-center transition-all duration-300 hover:brightness-95 active:brightness-90 cursor-pointer"
-                            data-lang="zh-TW">
-                            <svg class="absolute inset-0 w-full h-full">
-                                <path class="bg fill-[#e8e8e8] transition-colors duration-300" d="" />
-                            </svg>
-                            <span class="relative z-10 text-[1.8vw] transition-colors duration-300" lang="zh-TW"
-                                style="font-family: 'Inter', 'Source Han Sans TC', 'Source Han Sans SC', sans-serif;">繁體中文</span>
-                        </button>
-                    </div>
-
-                    <div class="modal-footer-actions flex gap-[1vw] mt-[1.5vw] w-full">
-                        <button
-                            class="tvm-button lang-confirm relative flex-1 h-[4vw] flex items-center justify-center transition-all duration-300 hover:brightness-95 active:brightness-90 cursor-pointer">
-                            <svg class="absolute inset-0 w-full h-full">
-                                <path class="bg fill-[#2e6aff]" d="" />
-                            </svg>
-                            <span class="relative z-10 text-[1.8vw] text-white"
-                                data-i18n="modal.language.button.ok.label">确定 / OK</span>
-                        </button>
-
-                        <button
-                            class="tvm-button lang-cancel relative flex-1 h-[4vw] flex items-center justify-center transition-all duration-300 hover:brightness-95 active:brightness-90 cursor-pointer">
-                            <svg class="absolute inset-0 w-full h-full">
-                                <path class="bg fill-[#e8e8e8]" d="" />
-                            </svg>
-                            <span class="relative z-10 text-[1.8vw]" data-i18n="modal.language.button.cancel.label">取消 /
-                                Cancel</span>
-                        </button>
+                            <button
+                                class="btn-quick tvm-button relative flex-1 h-[4vw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
+                                data-value="+2">
+                                <svg class="absolute inset-0 w-full h-full">
+                                    <path class="bg fill-[#e8e8e8]" d="" />
+                                </svg>
+                                <img src="./resources/button_contents/plus_2.svg" class="relative z-10 h-[1.8vw]"
+                                    alt="+2">
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <script src="script.js"></script>
+    </div>
+    <div class="modal-overlay fixed inset-0 z-100 items-center justify-center bg-black/60 backdrop-blur-sm transition-all duration-300"
+        id="langOverlay">
+        <div class="lang-modal relative w-[44vw] z-101 p-[1.5vw] flex flex-col items-center overflow-hidden"
+            id="langModal">
+            <svg class="absolute inset-0 w-full h-full pointer-events-none fill-white">
+                <path class="bg" d="" />
+            </svg>
+
+            <div class="modal-content relative z-10 w-full flex flex-col items-center">
+                <h2 class="text-[1.8vw] font-bold mb-[2vw]" data-i18n="modal.language.title">
+                    选择语言 / Select language
+                </h2>
+
+                <div class="lang-options-list w-full flex flex-col gap-[0.3vw]">
+
+                    <button
+                        class="tvm-button lang-item relative w-full h-[4vw] flex items-center justify-center transition-all duration-300 hover:brightness-95 active:brightness-90 cursor-pointer"
+                        data-lang="en-US">
+                        <svg class="absolute inset-0 w-full h-full">
+                            <path class="bg fill-[#e8e8e8] transition-colors duration-300" d="" />
+                        </svg>
+                        <span class="relative z-10 text-[1.8vw] transition-colors duration-300" lang="en-US"
+                            style="font-family: 'Inter', 'Source Han Sans SC', sans-serif;">English</span>
+                    </button>
+
+                    <button
+                        class="tvm-button lang-item relative w-full h-[4vw] flex items-center justify-center transition-all duration-300 hover:brightness-95 active:brightness-90 cursor-pointer"
+                        data-lang="ja-JP">
+                        <svg class="absolute inset-0 w-full h-full">
+                            <path class="bg fill-[#e8e8e8] transition-colors duration-300" d="" />
+                        </svg>
+                        <span class="relative z-10 text-[1.8vw] transition-colors duration-300" lang="ja-JP"
+                            style="font-family: 'Inter', 'Source Han Sans JP', 'Source Han Sans SC', sans-serif;">日本語</span>
+                    </button>
+
+                    <button
+                        class="tvm-button lang-item relative w-full h-[4vw] flex items-center justify-center transition-all duration-300 hover:brightness-95 active:brightness-90 cursor-pointer"
+                        data-lang="ko-KR">
+                        <svg class="absolute inset-0 w-full h-full">
+                            <path class="bg fill-[#e8e8e8] transition-colors duration-300" d="" />
+                        </svg>
+                        <span class="relative z-10 text-[1.8vw] transition-colors duration-300" lang="ko-KR"
+                            style="font-family: 'Inter', 'Source Han Sans KR', 'Source Han Sans SC', sans-serif;">한국어</span>
+                    </button>
+
+                    <button
+                        class="tvm-button lang-item active relative w-full h-[4vw] flex items-center justify-center transition-all duration-300 hover:brightness-95 active:brightness-90 cursor-pointer"
+                        data-lang="zh-CN">
+                        <svg class="absolute inset-0 w-full h-full">
+                            <path class="bg fill-[#2e6aff] transition-colors duration-300" d="" />
+                        </svg>
+                        <span class="relative z-10 text-[1.8vw] text-white transition-colors duration-300" lang="zh-CN"
+                            style="font-family: 'Inter', 'Source Han Sans SC', sans-serif;">简体中文</span>
+                    </button>
+
+                    <button
+                        class="tvm-button lang-item relative w-full h-[4vw] flex items-center justify-center transition-all duration-300 hover:brightness-95 active:brightness-90 cursor-pointer"
+                        data-lang="zh-TW">
+                        <svg class="absolute inset-0 w-full h-full">
+                            <path class="bg fill-[#e8e8e8] transition-colors duration-300" d="" />
+                        </svg>
+                        <span class="relative z-10 text-[1.8vw] transition-colors duration-300" lang="zh-TW"
+                            style="font-family: 'Inter', 'Source Han Sans TC', 'Source Han Sans SC', sans-serif;">繁體中文</span>
+                    </button>
+                </div>
+
+                <div class="modal-footer-actions flex gap-[1vw] mt-[1.5vw] w-full">
+                    <button
+                        class="tvm-button lang-confirm relative flex-1 h-[4vw] flex items-center justify-center transition-all duration-300 hover:brightness-95 active:brightness-90 cursor-pointer">
+                        <svg class="absolute inset-0 w-full h-full">
+                            <path class="bg fill-[#2e6aff]" d="" />
+                        </svg>
+                        <span class="relative z-10 text-[1.8vw] text-white"
+                            data-i18n="modal.language.button.ok.label">确定 / OK</span>
+                    </button>
+
+                    <button
+                        class="tvm-button lang-cancel relative flex-1 h-[4vw] flex items-center justify-center transition-all duration-300 hover:brightness-95 active:brightness-90 cursor-pointer">
+                        <svg class="absolute inset-0 w-full h-full">
+                            <path class="bg fill-[#e8e8e8]" d="" />
+                        </svg>
+                        <span class="relative z-10 text-[1.8vw]" data-i18n="modal.language.button.cancel.label">取消 /
+                            Cancel</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
 </body>
 
 </html>

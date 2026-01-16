@@ -12,7 +12,7 @@
     "modal.language.title": "選擇語言 / Select language",
     "modal.language.button.ok.label": "確定 / OK",
     "modal.language.button.cancel.label": "取消 / Cancel",
-    "page.main.panel.ticket_count.label": "購票張數",
+    "page.main.panel.ticket_count.label": "票數",
     "page.main.panel.total_fare.label": "應付總金額",
     "page.main.button.reset.label": "重設",
     "page.main.button.pay.label": "支付",
