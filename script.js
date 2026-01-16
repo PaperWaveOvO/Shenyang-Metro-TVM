@@ -170,11 +170,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const regularRadius = 1.5 * vw;
         const ENABLE_LIST_EXTENSION = false;
 
-        // 主容器裁切
         if (tvmContainer) {
             const rect = tvmContainer.getBoundingClientRect();
-            const w = Math.round(rect.width);
-            const h = Math.round(rect.height);
+            // 取整：消除亚像素导致的边缘模糊缝隙
+            const w = Math.floor(rect.width);
+            const h = Math.floor(rect.height);
             if (w > 0) {
                 tvmContainer.style.clipPath = `path('${getSmoothRectPath(w, h, 1.5 * vw)}')`;
             }
@@ -202,9 +202,6 @@ document.addEventListener("DOMContentLoaded", () => {
             { sel: ".btn-quick .bg", r: regularRadius }
         ];
 
-        // 安全边距：加大到 2px，彻底解决高分屏模态框边缘计算误差
-        const pad = 2;
-
         configs.forEach(cfg => {
             document.querySelectorAll(cfg.sel).forEach(pathEl => {
                 const container = pathEl.closest('.station-name-bg, .tvm-button, .lang-modal, .btn-quick, .btn-counter, .lang-item');
@@ -213,55 +210,38 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!container || !svg) return;
 
                 const rect = container.getBoundingClientRect();
-                // 使用 Math.round 消除亚像素
-                let w = Math.round(rect.width);
-                let h = Math.round(rect.height);
+                // 使用 Math.floor 确保形状填满容器且不溢出
+                let w = Math.floor(rect.width);
+                let h = Math.floor(rect.height);
 
                 if (w < 1 || h < 1) return;
 
                 let drawH = h;
+                let viewBoxY = 0;
 
                 if (ENABLE_LIST_EXTENSION) {
-                    if (cfg.type === 'list-top') { drawH = h * 2.5; }
-                    else if (cfg.type === 'list-bottom') { drawH = h * 2.5; }
+                    if (cfg.type === 'list-top') { drawH = h * 2.5; viewBoxY = 0; }
+                    else if (cfg.type === 'list-bottom') { drawH = h * 2.5; viewBoxY = drawH - h; }
                 }
 
-                // ====================================================
-                // 核心修复：分离 Layout 偏移与 Content 偏移
-                // ====================================================
+                // --- 核心修复逻辑 ---
 
-                // 1. 物理尺寸扩容 (确保 1:1 不缩放)
-                svg.style.width = `${w + pad * 2}px`;
-                svg.style.height = `${h + pad * 2}px`;
+                // 1. ViewBox 严格等于容器尺寸，消除缩放感
+                svg.setAttribute('viewBox', `0 ${viewBoxY} ${w} ${h}`);
 
-                // 2. 外部定位 (Layout Offset)
-                // ！！！绝对不要在这里用 transform，否则会跟 Modal 的动画冲突！！！
-                svg.style.position = 'absolute';
-                svg.style.left = `-${pad}px`;
-                svg.style.top = `-${pad}px`;
-                svg.style.transform = 'none'; // 强制清除可能的 transform
+                // 2. 物理尺寸保持 100%，确保坐标 1:1
+                svg.style.width = '100%';
+                svg.style.height = '100%';
+                svg.style.left = '0';
+                svg.style.top = '0';
 
-                // 3. 溢出保护
+                // 3. 关键：允许 SVG 内部内容溢出到 viewBox 之外显示（抗锯齿像素）
                 svg.style.overflow = 'visible';
 
-                // 4. ViewBox 设定 (坐标全是正数)
-                svg.setAttribute('viewBox', `0 0 ${w + pad * 2} ${h + pad * 2}`);
-
-                // 5. 内部内容偏移 (Content Offset)
-                // 创建 <g> 标签把 path 往里推，避开边缘
-                let group = svg.querySelector('g.offset-group');
-                if (!group) {
-                    group = document.createElementNS("http://www.w3.org/2000/svg", "g");
-                    group.classList.add('offset-group');
-                    pathEl.parentNode.insertBefore(group, pathEl);
-                    group.appendChild(pathEl);
-                }
-
-                // 让路径从 (2, 2) 开始画，留出足够的抗锯齿空间
-                group.setAttribute('transform', `translate(${pad}, ${pad})`);
-
-                // 6. 绘图
+                // 4. 渲染精度优化
                 pathEl.style.shapeRendering = 'geometricPrecision';
+
+                // 绘制路径
                 pathEl.setAttribute('d', getSmoothRectPath(w, drawH, cfg.r));
             });
         });
