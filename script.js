@@ -168,13 +168,12 @@ document.addEventListener("DOMContentLoaded", () => {
     function applyPaths() {
         const vw = window.innerWidth / 100;
         const regularRadius = 1.5 * vw;
-        const ENABLE_LIST_EXTENSION = false;
 
+        // 1. 主容器裁切 (tvmContainer)
         if (tvmContainer) {
             const rect = tvmContainer.getBoundingClientRect();
-            // 取整：消除亚像素导致的边缘模糊缝隙
-            const w = Math.floor(rect.width);
-            const h = Math.floor(rect.height);
+            const w = Math.round(rect.width);
+            const h = Math.round(rect.height);
             if (w > 0) {
                 tvmContainer.style.clipPath = `path('${getSmoothRectPath(w, h, 1.5 * vw)}')`;
             }
@@ -191,9 +190,9 @@ document.addEventListener("DOMContentLoaded", () => {
             { sel: '.button-line-item[data-line="10"] .bg', r: { tl: 0, bl: regularRadius, tr: 0, br: regularRadius } },
             { sel: '.button-line-item:not([data-line="1"]):not([data-line="10"]) .bg', r: 0 },
             { sel: '#langModal > svg > .bg', r: 3 * vw },
-            { sel: '.lang-item[data-lang="en-US"] .bg', r: { tl: regularRadius, tr: regularRadius, bl: 0, br: 0 }, type: 'list-top' },
-            { sel: '.lang-item[data-lang="zh-TW"] .bg', r: { bl: regularRadius, br: regularRadius, tl: 0, tr: 0 }, type: 'list-bottom' },
-            { sel: '.lang-item:not([data-lang="en-US"]):not([data-lang="zh-TW"]) .bg', r: 0, type: 'list-mid' },
+            { sel: '.lang-item[data-lang="en-US"] .bg', r: { tl: regularRadius, tr: regularRadius, bl: 0, br: 0 } },
+            { sel: '.lang-item[data-lang="zh-TW"] .bg', r: { bl: regularRadius, br: regularRadius, tl: 0, tr: 0 } },
+            { sel: '.lang-item:not([data-lang="en-US"]):not([data-lang="zh-TW"]) .bg', r: 0 },
             { sel: '.lang-confirm .bg', r: regularRadius },
             { sel: '.lang-cancel .bg', r: regularRadius },
             { sel: ".button-reset-by-distance .bg", r: regularRadius },
@@ -206,43 +205,39 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelectorAll(cfg.sel).forEach(pathEl => {
                 const container = pathEl.closest('.station-name-bg, .tvm-button, .lang-modal, .btn-quick, .btn-counter, .lang-item');
                 const svg = pathEl.closest('svg');
-
                 if (!container || !svg) return;
 
                 const rect = container.getBoundingClientRect();
-                // 使用 Math.floor 确保形状填满容器且不溢出
-                let w = Math.floor(rect.width);
-                let h = Math.floor(rect.height);
-
+                const w = Math.round(rect.width);
+                const h = Math.round(rect.height);
                 if (w < 1 || h < 1) return;
 
-                let drawH = h;
-                let viewBoxY = 0;
+                // --- 核心稳定逻辑：不改宽高，只改内部绘图 ---
 
-                if (ENABLE_LIST_EXTENSION) {
-                    if (cfg.type === 'list-top') { drawH = h * 2.5; viewBoxY = 0; }
-                    else if (cfg.type === 'list-bottom') { drawH = h * 2.5; viewBoxY = drawH - h; }
-                }
-
-                // --- 核心修复逻辑 ---
-
-                // 1. ViewBox 严格等于容器尺寸，消除缩放感
-                svg.setAttribute('viewBox', `0 ${viewBoxY} ${w} ${h}`);
-
-                // 2. 物理尺寸保持 100%，确保坐标 1:1
+                // 1. 标准 ViewBox，1:1 比例
+                svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
                 svg.style.width = '100%';
                 svg.style.height = '100%';
                 svg.style.left = '0';
                 svg.style.top = '0';
-
-                // 3. 关键：允许 SVG 内部内容溢出到 viewBox 之外显示（抗锯齿像素）
+                svg.style.transform = 'none';
                 svg.style.overflow = 'visible';
 
-                // 4. 渲染精度优化
-                pathEl.style.shapeRendering = 'geometricPrecision';
+                // 2. 绘图：稍微缩小 1.5 像素 (给描边留空间)
+                // 我们在路径上设置 transform，让它往里挪 0.75 像素
+                const shrink = 1.5;
+                const offset = shrink / 2;
 
-                // 绘制路径
-                pathEl.setAttribute('d', getSmoothRectPath(w, drawH, cfg.r));
+                pathEl.setAttribute('transform', `translate(${offset}, ${offset})`);
+                pathEl.setAttribute('d', getSmoothRectPath(w - shrink, h - shrink, cfg.r));
+
+                // 3. 描边补位：设置 2 像素描边，颜色与填充一致
+                // 获取当前的 fill 颜色（或者手动指定）
+                const color = window.getComputedStyle(pathEl).fill;
+                pathEl.style.stroke = color;
+                pathEl.style.strokeWidth = `${shrink + 0.2}px`; // 稍微多一点点，确保完全重合
+                pathEl.style.strokeLinejoin = 'round';
+                pathEl.style.shapeRendering = 'geometricPrecision';
             });
         });
     }
