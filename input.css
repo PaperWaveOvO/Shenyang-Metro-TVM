@@ -159,6 +159,10 @@ svg {
     position: absolute;
     inset: 0;
     pointer-events: none;
+    /* 确保 SVG 不会被父级背景遮挡 */
+    z-index: 0; 
+    /* 某些安卓机型需要这个来强制重绘 */
+    will-change: auto; 
 }
 
 /* 遮罩激活时，模态框向上弹出 */

@@ -170,8 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const regularRadius = 1.5 * vw;
         const ENABLE_LIST_EXTENSION = false;
 
-        // 1. 主容器裁切 (tvmContainer)
-        // 容器级裁切不需要外扩，因为它是作为遮罩使用的
+        // 主容器裁切
         if (tvmContainer) {
             const rect = tvmContainer.getBoundingClientRect();
             const w = Math.round(rect.width);
@@ -203,8 +202,8 @@ document.addEventListener("DOMContentLoaded", () => {
             { sel: ".btn-quick .bg", r: regularRadius }
         ];
 
-        // 核心补丁：向外扩充 1 像素，容纳抗锯齿边缘
-        const pad = 1;
+        // 安全边距：加大到 2px，彻底解决高分屏模态框边缘计算误差
+        const pad = 2;
 
         configs.forEach(cfg => {
             document.querySelectorAll(cfg.sel).forEach(pathEl => {
@@ -214,53 +213,56 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!container || !svg) return;
 
                 const rect = container.getBoundingClientRect();
-                // 使用 Math.round 消除亚像素模糊
+                // 使用 Math.round 消除亚像素
                 let w = Math.round(rect.width);
                 let h = Math.round(rect.height);
 
                 if (w < 1 || h < 1) return;
 
                 let drawH = h;
-                let viewBoxY = 0;
 
                 if (ENABLE_LIST_EXTENSION) {
-                    if (cfg.type === 'list-top') { drawH = h * 2.5; viewBoxY = 0; }
-                    else if (cfg.type === 'list-bottom') { drawH = h * 2.5; viewBoxY = drawH - h; }
+                    if (cfg.type === 'list-top') { drawH = h * 2.5; }
+                    else if (cfg.type === 'list-bottom') { drawH = h * 2.5; }
                 }
 
-                // ----------------------------------------------------
-                // 终极修复逻辑：物理外扩 + 坐标回拉
-                // ----------------------------------------------------
+                // ====================================================
+                // 核心修复：分离 Layout 偏移与 Content 偏移
+                // ====================================================
 
-                // 1. 设置 SVG 样式：绝对定位
-                svg.style.position = 'absolute';
-                // 允许溢出（双重保险）
-                svg.style.overflow = 'visible';
-
-                // 2. 【关键步骤 A】物理尺寸变大
-                // 容器 100px -> SVG 102px
-                // 这保证了 1 SVG 单位 = 1 屏幕像素，彻底解决“变小”问题
+                // 1. 物理尺寸扩容 (确保 1:1 不缩放)
                 svg.style.width = `${w + pad * 2}px`;
                 svg.style.height = `${h + pad * 2}px`;
 
-                // 3. 【关键步骤 B】位置回拉
-                // 因为 SVG 变大了，为了让里面的 (0,0) 点和容器对齐，需要往左上各拉 1px
+                // 2. 外部定位 (Layout Offset)
+                // ！！！绝对不要在这里用 transform，否则会跟 Modal 的动画冲突！！！
+                svg.style.position = 'absolute';
                 svg.style.left = `-${pad}px`;
                 svg.style.top = `-${pad}px`;
+                svg.style.transform = 'none'; // 强制清除可能的 transform
 
-                // 4. 【关键步骤 C】设置 ViewBox
-                // 对应物理尺寸，坐标系也扩大到 -1 到 w+1
-                // 这样 (0,0) 点依然在画布中心，但边缘有了呼吸空间
-                svg.setAttribute('viewBox', `${-pad} ${viewBoxY - pad} ${w + pad * 2} ${h + pad * 2}`);
+                // 3. 溢出保护
+                svg.style.overflow = 'visible';
 
-                // 5. 渲染优化
-                pathEl.style.shapeRendering = 'geometricPrecision'; // 几何精度
+                // 4. ViewBox 设定 (坐标全是正数)
+                svg.setAttribute('viewBox', `0 0 ${w + pad * 2} ${h + pad * 2}`);
 
-                // 6. 绘制路径 (使用原始 w 和 drawH)
+                // 5. 内部内容偏移 (Content Offset)
+                // 创建 <g> 标签把 path 往里推，避开边缘
+                let group = svg.querySelector('g.offset-group');
+                if (!group) {
+                    group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                    group.classList.add('offset-group');
+                    pathEl.parentNode.insertBefore(group, pathEl);
+                    group.appendChild(pathEl);
+                }
+
+                // 让路径从 (2, 2) 开始画，留出足够的抗锯齿空间
+                group.setAttribute('transform', `translate(${pad}, ${pad})`);
+
+                // 6. 绘图
+                pathEl.style.shapeRendering = 'geometricPrecision';
                 pathEl.setAttribute('d', getSmoothRectPath(w, drawH, cfg.r));
-
-                // 7. 强制 GPU 渲染 (解决部分手机 WebView 渲染层级问题)
-                svg.style.transform = 'translateZ(0)';
             });
         });
     }
