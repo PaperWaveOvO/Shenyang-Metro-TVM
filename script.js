@@ -168,8 +168,10 @@ document.addEventListener("DOMContentLoaded", () => {
     function applyPaths() {
         const vw = window.innerWidth / 100;
         const regularRadius = 1.5 * vw;
+        // 列表项伪增高开关
+        const ENABLE_LIST_EXTENSION = false;
 
-        // 1. 主容器裁切 (tvmContainer)
+        // 主容器裁切
         if (tvmContainer) {
             const rect = tvmContainer.getBoundingClientRect();
             const w = Math.round(rect.width);
@@ -190,9 +192,9 @@ document.addEventListener("DOMContentLoaded", () => {
             { sel: '.button-line-item[data-line="10"] .bg', r: { tl: 0, bl: regularRadius, tr: 0, br: regularRadius } },
             { sel: '.button-line-item:not([data-line="1"]):not([data-line="10"]) .bg', r: 0 },
             { sel: '#langModal > svg > .bg', r: 3 * vw },
-            { sel: '.lang-item[data-lang="en-US"] .bg', r: { tl: regularRadius, tr: regularRadius, bl: 0, br: 0 } },
-            { sel: '.lang-item[data-lang="zh-TW"] .bg', r: { bl: regularRadius, br: regularRadius, tl: 0, tr: 0 } },
-            { sel: '.lang-item:not([data-lang="en-US"]):not([data-lang="zh-TW"]) .bg', r: 0 },
+            { sel: '.lang-item[data-lang="en-US"] .bg', r: { tl: regularRadius, tr: regularRadius, bl: 0, br: 0 }, type: 'list-top' },
+            { sel: '.lang-item[data-lang="zh-TW"] .bg', r: { bl: regularRadius, br: regularRadius, tl: 0, tr: 0 }, type: 'list-bottom' },
+            { sel: '.lang-item:not([data-lang="en-US"]):not([data-lang="zh-TW"]) .bg', r: 0, type: 'list-mid' },
             { sel: '.lang-confirm .bg', r: regularRadius },
             { sel: '.lang-cancel .bg', r: regularRadius },
             { sel: ".button-reset-by-distance .bg", r: regularRadius },
@@ -205,16 +207,28 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelectorAll(cfg.sel).forEach(pathEl => {
                 const container = pathEl.closest('.station-name-bg, .tvm-button, .lang-modal, .btn-quick, .btn-counter, .lang-item');
                 const svg = pathEl.closest('svg');
+
                 if (!container || !svg) return;
 
                 const rect = container.getBoundingClientRect();
-                const w = Math.round(rect.width);
-                const h = Math.round(rect.height);
+                // 物理容器尺寸
+                let w = Math.round(rect.width);
+                let h = Math.round(rect.height);
+
                 if (w < 1 || h < 1) return;
 
-                // --- 核心稳定逻辑：不改宽高，只改内部绘图 ---
+                let drawH = h;
 
-                // 1. 标准 ViewBox，1:1 比例
+                if (ENABLE_LIST_EXTENSION) {
+                    if (cfg.type === 'list-top') { drawH = h * 2.5; }
+                    else if (cfg.type === 'list-bottom') { drawH = h * 2.5; }
+                }
+
+                // ==========================================
+                // 核心修复逻辑：安全缩进 (Safety Inset)
+                // ==========================================
+
+                // 1. 设置 ViewBox 与容器 1:1 对齐 (最稳健的设置)
                 svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
                 svg.style.width = '100%';
                 svg.style.height = '100%';
@@ -223,20 +237,38 @@ document.addEventListener("DOMContentLoaded", () => {
                 svg.style.transform = 'none';
                 svg.style.overflow = 'visible';
 
-                // 2. 绘图：稍微缩小 1.5 像素 (给描边留空间)
-                // 我们在路径上设置 transform，让它往里挪 0.75 像素
-                const shrink = 1.5;
-                const offset = shrink / 2;
+                // 2. 缩减算法输入
+                // 我们告诉算法：画一个比容器小 1px 的图形
+                // 这样生成的路径坐标最大值只有 w-1, h-1
+                // 缩减量 (Inset Amount)
+                const inset = 1;
 
-                pathEl.setAttribute('transform', `translate(${offset}, ${offset})`);
-                pathEl.setAttribute('d', getSmoothRectPath(w - shrink, h - shrink, cfg.r));
+                // 针对 drawH (绘制高度) 和 w (绘制宽度) 进行缩减
+                const safeW = w - (inset * 2);
+                const safeH = drawH - (inset * 2);
 
-                // 3. 描边补位：设置 2 像素描边，颜色与填充一致
-                // 获取当前的 fill 颜色（或者手动指定）
-                const color = window.getComputedStyle(pathEl).fill;
-                pathEl.style.stroke = color;
-                pathEl.style.strokeWidth = `${shrink + 0.2}px`; // 稍微多一点点，确保完全重合
-                pathEl.style.strokeLinejoin = 'round';
+                // 3. 生成“小一号”的路径
+                // 如果尺寸太小就不画了，防止算法报错
+                if (safeW <= 0 || safeH <= 0) return;
+
+                pathEl.setAttribute('d', getSmoothRectPath(safeW, safeH, cfg.r));
+
+                // 4. 将“小一号”的路径居中放置
+                // 通过 transform 把它往右下挪 1px
+                // 结果：左边空 1px，右边空 1px，图形绝对安全
+                pathEl.setAttribute('transform', `translate(${inset}, ${inset})`);
+
+                // 5. 视觉补偿（可选）
+                // 因为图形变小了 2px，为了不露出缝隙，我们可以加一个描边把这 2px 补回来
+                // 描边是向外扩散的，且不容易被裁切
+                const computedColor = window.getComputedStyle(pathEl).fill;
+                // 只有当填充色有效时才加描边
+                if (computedColor !== 'none') {
+                    pathEl.style.stroke = computedColor;
+                    pathEl.style.strokeWidth = `${inset * 2}px`; // 补回缩减的尺寸
+                    pathEl.style.strokeLinejoin = 'round'; // 圆角连接
+                }
+
                 pathEl.style.shapeRendering = 'geometricPrecision';
             });
         });
