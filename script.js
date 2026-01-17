@@ -200,11 +200,13 @@ document.addEventListener("DOMContentLoaded", () => {
             { sel: ".button-pay-by-distance .bg", r: regularRadius },
             { sel: ".btn-counter .bg", r: regularRadius },
             { sel: ".btn-quick .bg", r: regularRadius },
+            { sel: '.ticket-selection .bg', r: regularRadius },
+            { sel: '.fare-display .bg', r: regularRadius },
         ];
 
         configs.forEach(cfg => {
             document.querySelectorAll(cfg.sel).forEach(pathEl => {
-                const container = pathEl.closest('.station-name-bg, .tvm-button, .lang-modal, .btn-quick, .btn-counter, .lang-item, .distance-panel-divider');
+                const container = pathEl.closest('.station-name-bg, .tvm-button, .lang-modal, .btn-quick, .btn-counter, .lang-item, .distance-panel-divider, .ticket-selection, .fare-display');
                 const svg = pathEl.closest('svg');
 
                 if (!container || !svg) return;

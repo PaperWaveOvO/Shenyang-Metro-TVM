@@ -85,6 +85,11 @@ html:lang(ko-KR) * {
     font-family: 'Inter', 'Source Han Sans KR', 'Source Han Sans SC', sans-serif;
 }
 
+/* 当 <html lang="ko-KR"> 时应用 */
+html:lang(lzh) * {
+    font-family: 'Inter', 'Source Han Sans TC', 'Source Han Sans SC', sans-serif;
+}
+
 /* 激活 Overlay 时的显示 */
 #langOverlay.active {
     display: flex;
