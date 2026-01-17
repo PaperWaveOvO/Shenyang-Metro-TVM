@@ -11,13 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const screenByAmount = document.getElementById('screen-by-amount');
 
     const now = new Date();
-
-    const year = now.getFullYear();      // 2026
-    const month = now.getMonth() + 1;    // 月份从0开始，所以要+1
-    const date = now.getDate();          // 12
-    const hours = now.getHours();        // 11
-    const minutes = now.getMinutes();    // 54
-
     const isAndroidWebView =
         /Android/i.test(navigator.userAgent) &&
         !/Chrome\/\d+/i.test(navigator.userAgent);
@@ -27,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     let currentMode = 'distance';
+    let tempLang = document.documentElement.lang || "zh-CN";
     let originalLang = document.documentElement.lang || "zh-CN";
     let translations = {};
     let isAnimating = false;
@@ -34,26 +28,90 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updateDateTime() {
         const now = new Date();
+        const htmlLang = document.documentElement.lang;
 
-        // 格式化日期：YYYY-MM-DD
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const date = String(now.getDate()).padStart(2, '0');
-
-        // 格式化时间：HH:mm
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-
-        // 找到 HTML 中的元素并赋值
         const dateElement = document.querySelector('.date');
         const timeElement = document.querySelector('.time');
+        const weekElement = document.querySelector('.week');
 
-        if (dateElement) dateElement.textContent = `${year}-${month}-${date}`;
-        if (timeElement) timeElement.textContent = `${hours}:${minutes}`;
+        if (!dateElement || !timeElement || !weekElement) return;
+
+        if (htmlLang === 'lzh') {
+            try {
+                const lunarParts = new Intl.DateTimeFormat('zh-u-ca-chinese', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                }).formatToParts(now);
+
+                const getPart = (type) => lunarParts.find(p => p.type === type)?.value || "";
+
+                // 1. 修正干支计算 (确保 2026年 输出为 "乙巳")
+                // 天干：4为甲，5为乙... 0为庚
+                const gan = ["庚", "辛", "壬", "癸", "甲", "乙", "丙", "丁", "戊", "己"];
+                const zhi = ["申", "酉", "戌", "亥", "子", "丑", "寅", "卯", "辰", "巳", "午", "未"];
+                const y = now.getFullYear();
+                // 计算公式：2026 -> 乙巳
+                const yearGanzhi = gan[y % 10] + zhi[y % 12];
+
+                // 2. 月份雅称 (全繁体化)
+                let monthName = getPart('month');
+                const monthMap = {
+                    '正月': '孟春', '二月': '仲春', '三月': '季春',
+                    '四月': '孟夏', '五月': '仲夏', '六月': '季夏',
+                    '七月': '孟秋', '八月': '仲秋', '九月': '季秋',
+                    '十月': '孟冬', '十一月': '仲冬', '十二月': '季冬'
+                };
+                if (monthMap[monthName]) monthName = monthMap[monthName];
+
+                // 3. 传统日名化 (繁体化: 廿, 卅)
+                const dayNameRaw = getPart('day');
+                const dayInt = parseInt(dayNameRaw.replace(/\D/g, ''));
+                const traditionalDayMap = [
+                    "", "初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十",
+                    "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十",
+                    "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"
+                ];
+                const traditionalDay = traditionalDayMap[dayInt] || dayNameRaw;
+
+                // 4. 七曜 (繁体化)
+                const yaoMap = ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'];
+                const yao = yaoMap[now.getDay()];
+
+                // 5. 时辰与刻 (繁体化)
+                const hours = now.getHours();
+                const shichenMap = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
+                const shichenIndex = Math.floor((hours + 1) % 24 / 2);
+                const shichenName = shichenMap[shichenIndex];
+                // 刻的描述可以更文雅：初/正
+                const ke = (hours % 2 !== 0) ? '初' : '正';
+
+                // --- 最终赋值：注意全部使用繁体字 ---
+                dateElement.textContent = `歲次${yearGanzhi} ${monthName}${traditionalDay}`; // 去掉多余空格
+                weekElement.textContent = yao;
+                timeElement.textContent = `${shichenName}時${ke}`;
+
+            } catch (e) {
+                console.error("文言文格式化失败:", e);
+                dateElement.textContent = "歲次載入中";
+            }
+        } else {
+            // --- 標準現代模式 ---
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const date = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+
+            // 星期
+            const weekMap = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const weekStr = weekMap[now.getDay()];
+
+            dateElement.textContent = `${year}-${month}-${date}`;
+            weekElement.textContent = weekStr;
+            timeElement.textContent = `${hours}:${minutes}`;
+        }
     }
-
-    // 每秒钟调用一次
-    setInterval(updateDateTime, 1000);
 
     // 页面加载时立即执行一次，防止首秒空白
     updateDateTime();
@@ -344,17 +402,34 @@ document.addEventListener("DOMContentLoaded", () => {
     // 6. 语言模态框逻辑
     // ==========================================
     async function loadTranslations(langCode) {
+        // 1. 先改變 HTML lang
+        document.documentElement.lang = langCode;
+        // 2. 立即強制刷新一次時間格式
+        updateDateTime();
+
+        if (langCode === 'lzh') {
+            document.querySelector('.time').style.fontSize = '3vw';
+        } else {
+            document.querySelector('.time').style.fontSize = '3.5vw';
+        }
+
         try {
+            // 3. 嘗試獲取翻譯 JSON
             const response = await fetch(`./resources/translations/${langCode}.json`);
-            if (!response.ok) return;
+            if (!response.ok) throw new Error("文件不存在");
+
             translations = await response.json();
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (translations[key]) el.textContent = translations[key];
             });
-            document.documentElement.lang = langCode;
+
             requestAnimationFrame(applyPaths);
-        } catch (e) { console.warn("Translation load failed."); }
+        } catch (e) {
+            console.warn(`翻譯加載失敗 (${langCode}):`, e.message);
+            // 即使沒找到 JSON 也要讓 applyPaths 運行，否則圓角會掛掉
+            requestAnimationFrame(applyPaths);
+        }
     }
 
     // 设置临时高亮（点击列表项但还没按“确定”）
@@ -389,11 +464,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (apply) {
             loadTranslations(tempLang);
         } else {
-            // 取消，还原原本高亮
             setTempHighlight(originalLang);
         }
         langOverlay.classList.remove('active');
-        tvmContainer.classList.remove('lang-mode');
     }
 
     function switchLanguage(langCode) {
