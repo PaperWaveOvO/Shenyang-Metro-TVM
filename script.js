@@ -38,6 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (htmlLang === 'lzh') {
             try {
+                const RLO = "\u202E";
+
                 const lunarParts = new Intl.DateTimeFormat('zh-u-ca-chinese', {
                     year: 'numeric',
                     month: 'long',
@@ -87,9 +89,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 const ke = (hours % 2 !== 0) ? '初' : '正';
 
                 // --- 最终赋值：注意全部使用繁体字 ---
-                dateElement.textContent = `歲次${yearGanzhi} ${monthName}${traditionalDay}`; // 去掉多余空格
-                weekElement.textContent = yao;
-                timeElement.textContent = `${shichenName}時${ke}`;
+                dateElement.textContent = `${RLO}歲次${yearGanzhi} ${monthName}${traditionalDay}`; // 去掉多余空格
+                weekElement.textContent = `${RLO}${yao}`;
+                timeElement.textContent = `${RLO}${shichenName}時${ke}`;
 
             } catch (e) {
                 console.error("文言文格式化失败:", e);
@@ -413,6 +415,11 @@ document.addEventListener("DOMContentLoaded", () => {
     async function loadTranslations(langCode) {
         const ticketCount = document.querySelector('.count-value');
 
+        const minusElement = document.querySelector('.minus');
+        const plusElement = document.querySelector('.plus');
+        const minus2Element = document.querySelector('.minus-2');
+        const plus2Element = document.querySelector('.plus-2');
+
         const currencyEl = document.querySelector('.currency');
         const amountEl = document.querySelector('.amount');
 
@@ -422,25 +429,56 @@ document.addEventListener("DOMContentLoaded", () => {
         updateDateTime();
 
         if (langCode === 'lzh') {
-            document.querySelector('.time').style.fontSize = '3vw';
+            document.querySelector('.time').style.fontSize = '2.5vw';
 
             // 文言文模式
-            ticketCount.textContent = '貳'
+            ticketCount.textContent = '貳';
+            ticketCount.style.fontSize = '3vw';
+
+            minusElement.src = './resources/button_contents/lzh_minus.svg';
+            plusElement.src = './resources/button_contents/lzh_plus.svg';
+            minus2Element.src = './resources/button_contents/lzh_minus_2.svg';
+            plus2Element.src = './resources/button_contents/lzh_plus_2.svg';
+
+            [minusElement, plusElement].forEach(el => {
+                el.style.width = '1.8vw';
+                el.style.height = '1.8vw';
+            });
 
             amountEl.textContent = '捌'; // 硬编码 8
+            amountEl.style.fontSize = '3vw';
             currencyEl.textContent = '文';
-            
+            currencyEl.style.fontSize = '2vw';
+
             // 可选：微调样式，文言文可能不需要那么紧凑的 line-height
             amountEl.style.lineHeight = "1.2";
         } else {
             document.querySelector('.time').style.fontSize = '3.5vw';
 
             // 其他所有语言模式
-            ticketCount.textContent = '2'
+            ticketCount.textContent = '2';
+            ticketCount.style.fontSize = '3.5vw';
+
+            minusElement.src = './resources/button_contents/minus.svg';
+            plusElement.src = './resources/button_contents/plus.svg';
+            minus2Element.src = './resources/button_contents/minus_2.svg';
+            plus2Element.src = './resources/button_contents/plus_2.svg';
+
+            minusElement.classList.remove('w-[1.8vw]');
+            minusElement.classList.add('w-[1.5vw]', 'h-[1.5vw]');
+            plusElement.classList.remove('w-[1.8vw]');
+            plusElement.classList.add('w-[1.5vw]', 'h-[1.5vw]');
+
+            [minusElement, plusElement].forEach(el => {
+                el.style.width = '1.5vw';
+                el.style.height = '1.5vw';
+            });
 
             amountEl.textContent = '8';
+            amountEl.style.fontSize = '3.5vw';
             currencyEl.textContent = '¥';
-            
+            currencyEl.style.fontSize = '2.5vw';
+
             // 还原 line-height
             amountEl.style.lineHeight = "0.8";
         }
