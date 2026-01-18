@@ -8,14 +8,10 @@
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
     --color-gray-100: oklch(96.7% 0.003 264.542);
-    --color-gray-300: oklch(87.2% 0.01 258.338);
-    --color-gray-700: oklch(37.3% 0.034 259.733);
-    --color-gray-800: oklch(27.8% 0.033 256.848);
     --color-black: #000;
     --color-white: #fff;
     --spacing: 0.25rem;
     --font-weight-bold: 700;
-    --font-weight-black: 900;
     --tracking-wider: 0.05em;
     --leading-tight: 1.25;
     --blur-sm: 8px;
@@ -178,6 +174,9 @@
   .pointer-events-none {
     pointer-events: none;
   }
+  .visible {
+    visibility: visible;
+  }
   .absolute {
     position: absolute;
   }
@@ -223,20 +222,11 @@
   .m-0 {
     margin: calc(var(--spacing) * 0);
   }
-  .mx-auto {
-    margin-inline: auto;
-  }
-  .my-\[2vw\] {
-    margin-block: 2vw;
-  }
   .mt-\[0\.5vw\] {
     margin-top: 0.5vw;
   }
   .mt-\[1\.5vw\] {
     margin-top: 1.5vw;
-  }
-  .mr-\[0\.5vw\] {
-    margin-right: 0.5vw;
   }
   .mb-\[1\.5vw\] {
     margin-bottom: 1.5vw;
@@ -244,17 +234,11 @@
   .mb-\[1vw\] {
     margin-bottom: 1vw;
   }
-  .mb-\[2vw\] {
-    margin-bottom: 2vw;
-  }
   .box-content {
     box-sizing: content-box;
   }
   .flex {
     display: flex;
-  }
-  .hidden {
-    display: none;
   }
   .aspect-video {
     aspect-ratio: var(--aspect-video);
@@ -264,9 +248,6 @@
   }
   .h-\[1\.8vw\] {
     height: 1.8vw;
-  }
-  .h-\[1vw\] {
-    height: 1vw;
   }
   .h-\[4\.2vw\] {
     height: 4.2vw;
@@ -286,14 +267,8 @@
   .h-screen {
     height: 100vh;
   }
-  .w-\[0\.3vw\] {
-    width: 0.3vw;
-  }
   .w-\[1\.5vw\] {
     width: 1.5vw;
-  }
-  .w-\[1vw\] {
-    width: 1vw;
   }
   .w-\[4vw\] {
     width: 4vw;
@@ -340,6 +315,9 @@
   .grow {
     flex-grow: 1;
   }
+  .basis-0 {
+    flex-basis: calc(var(--spacing) * 0);
+  }
   .cursor-pointer {
     cursor: pointer;
   }
@@ -372,17 +350,6 @@
   }
   .overflow-hidden {
     overflow: hidden;
-  }
-  .border-t-2 {
-    border-top-style: var(--tw-border-style);
-    border-top-width: 2px;
-  }
-  .border-dashed {
-    --tw-border-style: dashed;
-    border-style: dashed;
-  }
-  .border-gray-300 {
-    border-color: var(--color-gray-300);
   }
   .bg-\[\#6b3889\] {
     background-color: #6b3889;
@@ -417,8 +384,14 @@
   .p-\[1\.5vw\] {
     padding: 1.5vw;
   }
+  .px-\[1\.5vw\] {
+    padding-inline: 1.5vw;
+  }
   .py-\[1\.5vw\] {
     padding-block: 1.5vw;
+  }
+  .pb-\[1\.5vw\] {
+    padding-bottom: 1.5vw;
   }
   .text-\[1\.6vw\] {
     font-size: 1.6vw;
@@ -438,9 +411,6 @@
   .text-\[3\.5vw\] {
     font-size: 3.5vw;
   }
-  .text-\[3vw\] {
-    font-size: 3vw;
-  }
   .leading-\[1\.3\] {
     --tw-leading: 1.3;
     line-height: 1.3;
@@ -452,10 +422,6 @@
   .leading-tight {
     --tw-leading: var(--leading-tight);
     line-height: var(--leading-tight);
-  }
-  .font-black {
-    --tw-font-weight: var(--font-weight-black);
-    font-weight: var(--font-weight-black);
   }
   .font-bold {
     --tw-font-weight: var(--font-weight-bold);
@@ -471,12 +437,6 @@
   .text-black {
     color: var(--color-black);
   }
-  .text-gray-700 {
-    color: var(--color-gray-700);
-  }
-  .text-gray-800 {
-    color: var(--color-gray-800);
-  }
   .text-white {
     color: var(--color-white);
   }
@@ -491,15 +451,13 @@
     --tw-shadow: 0 0vw 0.8vw var(--tw-shadow-color, rgba(0,0,0,0.15));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
+  .filter {
+    filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
+  }
   .backdrop-blur-sm {
     --tw-backdrop-blur: blur(var(--blur-sm));
     -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
     backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
-  }
-  .transition {
-    transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
-    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-    transition-duration: var(--tw-duration, var(--default-transition-duration));
   }
   .transition-all {
     transition-property: all;
@@ -536,66 +494,68 @@
 }
 @font-face {
   font-family: 'Source Han Sans SC';
-  src: url('../resources/fonts/SOURCEHANSANSSC-REGULAR.OTF') format('opentype');
+  src: url('../resources/fonts/SOURCEHANSANSSC-REGULAR.woff2') format('woff2');
   font-weight: 400;
 }
 @font-face {
   font-family: 'Source Han Sans SC';
-  src: url('../resources/fonts/SOURCEHANSANSSC-BOLD.OTF') format('opentype');
+  src: url('../resources/fonts/SOURCEHANSANSSC-BOLD.woff2') format('woff2');
   font-weight: 700;
 }
 @font-face {
   font-family: 'Source Han Sans JP';
-  src: url('../resources/fonts/SourceHanSans-Regular.otf') format('opentype');
+  src: url('../resources/fonts/SourceHanSans-Regular.woff2') format('woff2');
   font-weight: 400;
 }
 @font-face {
   font-family: 'Source Han Sans JP';
-  src: url('../resources/fonts/SourceHanSans-Bold.otf') format('opentype');
+  src: url('../resources/fonts/SourceHanSans-Bold.woff2') format('woff2');
   font-weight: 700;
 }
 @font-face {
   font-family: 'Source Han Sans TC';
-  src: url('../resources/fonts/SourceHanSansTC-Regular.otf') format('opentype');
+  src: url('../resources/fonts/SourceHanSansTC-Regular.woff2') format('woff2');
   font-weight: 400;
 }
 @font-face {
   font-family: 'Source Han Sans TC';
-  src: url('../resources/fonts/SourceHanSansTC-Bold.otf') format('opentype');
+  src: url('../resources/fonts/SourceHanSansTC-Bold.woff2') format('woff2');
   font-weight: 700;
 }
 @font-face {
   font-family: 'Source Han Sans KR';
-  src: url('../resources/fonts/SourceHanSansKR-Regular.otf') format('opentype');
+  src: url('../resources/fonts/SourceHanSansKR-Regular.woff2') format('woff2');
   font-weight: 400;
 }
 @font-face {
   font-family: 'Source Han Sans KR';
-  src: url('../resources/fonts/SourceHanSansKR-Bold.otf') format('opentype');
+  src: url('../resources/fonts/SourceHanSansKR-Bold.woff2') format('woff2');
   font-weight: 700;
 }
 @font-face {
   font-family: 'Inter';
-  src: url('../resources/fonts/INTER-REGULAR.otf') format('opentype');
+  src: url('../resources/fonts/INTER-REGULAR.woff2') format('woff2');
   font-weight: 400;
 }
 @font-face {
   font-family: 'Inter';
-  src: url('../resources/fonts/INTER-BOLD.otf') format('opentype');
+  src: url('../resources/fonts/INTER-BOLD.woff2') format('woff2');
   font-weight: 700;
 }
 body {
   font-family: 'Inter', 'Source Han Sans SC', sans-serif;
-  overflow: hidden;
 }
-html:lang(ja-JP) body {
+html:lang(ja-JP) * {
   font-family: 'Inter', 'Source Han Sans JP', 'Source Han Sans SC', sans-serif;
 }
-html:lang(zh-TW) body, html:lang(zh-HK) body {
+html:lang(zh-TW) *, html:lang(zh-HK) * {
   font-family: 'Inter', 'Source Han Sans TC', 'Source Han Sans SC', sans-serif;
 }
-html:lang(ko-KR) body {
+html:lang(ko-KR) * {
   font-family: 'Inter', 'Source Han Sans KR', 'Source Han Sans SC', sans-serif;
+}
+html:lang(lzh) * {
+  font-family: 'Inter', 'Source Han Sans TC', 'Source Han Sans SC', sans-serif;
 }
 #langOverlay.active {
   display: flex;
@@ -607,18 +567,24 @@ html:lang(ko-KR) body {
   filter: blur(4px) brightness(0.8);
   pointer-events: none;
 }
+.tvm-button, .station-name-bg, .lang-item, .btn-quick, .btn-counter {
+  position: relative;
+  overflow: visible !important;
+  z-index: 1;
+}
 #langOverlay {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
+  z-index: 9999;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.4s ease, background-color 0.4s ease, backdrop-filter 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
 }
 #langOverlay.active {
   opacity: 1;
@@ -628,13 +594,26 @@ html:lang(ko-KR) body {
 }
 #langModal {
   position: relative;
-  transform: translateY(10%);
   opacity: 0;
-  transition: transform 0.5s cubic-bezier(0.34, 1.5, 0.64, 1), opacity 0.5s ease;
+  transform: translateY(10%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 1, 1), opacity 0.3s linear;
+  overflow: visible !important;
+}
+svg {
+  overflow: visible !important;
+}
+#langModal svg {
+  overflow: visible !important;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  will-change: auto;
 }
 #langOverlay.active #langModal {
-  transform: translateY(0);
   opacity: 1;
+  transform: translateY(0);
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
 }
 .tvm-container.lang-mode {
   pointer-events: none;
@@ -691,10 +670,28 @@ html:lang(ko-KR) body {
   position: absolute;
   inset: 0;
 }
-@property --tw-border-style {
-  syntax: "*";
-  inherits: false;
-  initial-value: solid;
+.tvm-button, .btn-quick, .btn-counter {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  outline: none;
+  position: relative;
+  overflow: visible !important;
+  z-index: 1;
+}
+.tvm-button svg, .station-name-bg svg {
+  overflow: visible !important;
+  z-index: 0;
+  pointer-events: none;
+  transform: translateZ(0);
+  will-change: transform;
+}
+.tvm-button span, .tvm-button img {
+  position: relative;
+  z-index: 10;
+}
+#langModal {
+  overflow: visible !important;
 }
 @property --tw-leading {
   syntax: "*";
@@ -773,46 +770,6 @@ html:lang(ko-KR) body {
   inherits: false;
   initial-value: 0 0 #0000;
 }
-@property --tw-backdrop-blur {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-backdrop-brightness {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-backdrop-contrast {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-backdrop-grayscale {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-backdrop-hue-rotate {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-backdrop-invert {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-backdrop-opacity {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-backdrop-saturate {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-backdrop-sepia {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-duration {
-  syntax: "*";
-  inherits: false;
-}
 @property --tw-blur {
   syntax: "*";
   inherits: false;
@@ -866,10 +823,49 @@ html:lang(ko-KR) body {
   syntax: "*";
   inherits: false;
 }
+@property --tw-backdrop-blur {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-brightness {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-contrast {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-grayscale {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-hue-rotate {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-invert {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-opacity {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-saturate {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-sepia {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-duration {
+  syntax: "*";
+  inherits: false;
+}
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
-      --tw-border-style: solid;
       --tw-leading: initial;
       --tw-font-weight: initial;
       --tw-tracking: initial;
@@ -887,16 +883,6 @@ html:lang(ko-KR) body {
       --tw-ring-offset-width: 0px;
       --tw-ring-offset-color: #fff;
       --tw-ring-offset-shadow: 0 0 #0000;
-      --tw-backdrop-blur: initial;
-      --tw-backdrop-brightness: initial;
-      --tw-backdrop-contrast: initial;
-      --tw-backdrop-grayscale: initial;
-      --tw-backdrop-hue-rotate: initial;
-      --tw-backdrop-invert: initial;
-      --tw-backdrop-opacity: initial;
-      --tw-backdrop-saturate: initial;
-      --tw-backdrop-sepia: initial;
-      --tw-duration: initial;
       --tw-blur: initial;
       --tw-brightness: initial;
       --tw-contrast: initial;
@@ -910,6 +896,16 @@ html:lang(ko-KR) body {
       --tw-drop-shadow-color: initial;
       --tw-drop-shadow-alpha: 100%;
       --tw-drop-shadow-size: initial;
+      --tw-backdrop-blur: initial;
+      --tw-backdrop-brightness: initial;
+      --tw-backdrop-contrast: initial;
+      --tw-backdrop-grayscale: initial;
+      --tw-backdrop-hue-rotate: initial;
+      --tw-backdrop-invert: initial;
+      --tw-backdrop-opacity: initial;
+      --tw-backdrop-saturate: initial;
+      --tw-backdrop-sepia: initial;
+      --tw-duration: initial;
     }
   }
 }

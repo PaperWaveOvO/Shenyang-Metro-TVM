@@ -104,8 +104,17 @@ document.addEventListener("DOMContentLoaded", () => {
             const minutes = String(now.getMinutes()).padStart(2, '0');
 
             // 星期
-            const weekMap = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-            const weekStr = weekMap[now.getDay()];
+            const multiLangWeek = {
+                'zh-CN': ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+                'zh-TW': ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+                'en-US': ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+                'ja-JP': ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
+                'ko-KR': ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일']
+            };
+
+            // 获取方式：
+            const lang = document.documentElement.lang || 'zh-CN'; // 默认中文
+            const weekStr = multiLangWeek[lang][now.getDay()];
 
             dateElement.textContent = `${year}-${month}-${date}`;
             weekElement.textContent = weekStr;
@@ -256,10 +265,10 @@ document.addEventListener("DOMContentLoaded", () => {
             { sel: '.lang-cancel .bg', r: regularRadius },
             { sel: ".button-reset-by-distance .bg", r: regularRadius },
             { sel: ".button-pay-by-distance .bg", r: regularRadius },
+            { sel: '.ticket-selection .bg', r: 3 * vw },
+            { sel: '.fare-display .bg', r: 3 * vw },
             { sel: ".btn-counter .bg", r: regularRadius },
             { sel: ".btn-quick .bg", r: regularRadius },
-            { sel: '.ticket-selection .bg', r: regularRadius },
-            { sel: '.fare-display .bg', r: regularRadius },
         ];
 
         configs.forEach(cfg => {

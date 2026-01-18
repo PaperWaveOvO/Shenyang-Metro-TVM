@@ -66,7 +66,6 @@
 /* 默认字体 */
 body {
     font-family: 'Inter', 'Source Han Sans SC', sans-serif;
-    overflow: hidden;
 }
 
 /* 当 <html lang="ja-JP"> 时应用 */
@@ -120,17 +119,23 @@ html:lang(lzh) * {
 
 /* 弹窗主体 */
 #langOverlay {
-    position: fixed; /* 使用 fixed 确保覆盖全屏 */
+    position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
-    display: flex;             /* 始终为 flex */
-    align-items: center;       /* 垂直居中 */
-    justify-content: center;   /* 水平居中 */
-    z-index: 9999; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
     
-    opacity: 0;                /* 初始透明 */
-    pointer-events: none;      /* 初始不可点击 */
-    transition: opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+    
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+
+    transition: 
+        opacity 0.3s ease, 
+        backdrop-filter 0.3s ease;
 }
 
 /* 激活遮罩 */
@@ -144,11 +149,15 @@ html:lang(lzh) * {
 /* 模态框主体：默认向下偏移 */
 #langModal {
     position: relative;
-    transform: translateY(10%); /* 初始位置更靠下一点 */
     opacity: 0;
+    transform: translateY(10%); 
+    
+    /* 这里定义【退场动画】(Exit) */
+    /* 建议：0.25s 左右，使用 Ease-In (先慢后快)，感觉物体有重力掉落 */
     transition: 
-        transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), 
-        opacity 0.4s ease;
+        transform 0.3s cubic-bezier(0.4, 0, 1, 1), 
+        opacity 0.3s linear;
+    
     overflow: visible !important;
 }
 
@@ -172,8 +181,14 @@ svg {
 
 /* 遮罩激活时，模态框向上弹出 */
 #langOverlay.active #langModal {
-    transform: translateY(0);
     opacity: 1;
+    transform: translateY(0);
+
+    /* 这里定义【进场动画】(Entry) */
+    /* 建议：0.5s 左右，使用你喜欢的回弹曲线 (Overshoot) */
+    transition: 
+        transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), 
+        opacity 0.5s ease;
 }
 
 /* 模糊背景 */
