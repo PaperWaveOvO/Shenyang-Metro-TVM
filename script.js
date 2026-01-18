@@ -600,11 +600,17 @@ document.addEventListener("DOMContentLoaded", () => {
             if (e.key === 'Escape' || e.key === 'Esc') {
                 // 检查模态框是否正处于激活状态
                 if (langOverlay && langOverlay.classList.contains('active')) {
-                    console.log("检测到 ESC 键，正在关闭弹窗...");
+                    console.log("检测到 ESC 键按下，正在关闭弹窗……");
                     closeModal(false); // 执行取消逻辑
                 }
             }
         });
+
+        langOverlay.addEventListener('click', () => {
+            if (langOverlay && langOverlay.classList.contains('active')) {
+                    closeModal(false); // 执行取消逻辑
+                }
+        })
 
         // 【新增：绑定语言选项的临时高亮逻辑】
         document.querySelectorAll('.lang-item').forEach(item => {
