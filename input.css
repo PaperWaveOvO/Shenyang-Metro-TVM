@@ -3,27 +3,29 @@
 /* 基础思源黑体 - 常规 */
 @font-face {
     font-family: 'Source Han Sans SC';
-    src: url('../resources/fonts/SOURCEHANSANSSC-REGULAR.woff2') format('woff2');
+    src: url('../resources/fonts/SourceHanSansSC-Regular.woff2') format('woff2');
     font-weight: 400;
 }
 
 /* 基础思源黑体 - 加粗 */
 @font-face {
     font-family: 'Source Han Sans SC';
-    src: url('../resources/fonts/SOURCEHANSANSSC-BOLD.woff2') format('woff2');
+    src: url('../resources/fonts/SourceHanSansSC-Bold.woff2') format('woff2');
     font-weight: 700;
 }
+
+/* pyftsubset ShangguSerif-Bold.ttf --unicodes="U+0000-007F,U+00A0-00FF,U+2000-206F,U+3000-30FF,U+4E00-9FFF,U+FF00-FFEF" --flavor=woff2 --output-file=ShangguSerif-Bold.woff2 */
 
 /* 其他地区字体 */
 @font-face {
     font-family: 'Source Han Sans JP';
-    src: url('../resources/fonts/SourceHanSans-Regular.woff2') format('woff2');
+    src: url('../resources/fonts/SourceHanSansJP-Regular.woff2') format('woff2');
     font-weight: 400;
 }
 
 @font-face {
     font-family: 'Source Han Sans JP';
-    src: url('../resources/fonts/SourceHanSans-Bold.woff2') format('woff2');
+    src: url('../resources/fonts/SourceHanSansJP-Bold.woff2') format('woff2');
     font-weight: 700;
 }
 
@@ -41,13 +43,25 @@
 
 @font-face {
     font-family: 'Source Han Sans KR';
-    src: url('../resources/fonts/SourceHanSansKR-Regular.woff2') format('woff2');
+    src: url('../resources/fonts/SourceHanSansKR-Regular.woff2') format('woff');
     font-weight: 400;
 }
 
 @font-face {
     font-family: 'Source Han Sans KR';
-    src: url('../resources/fonts/SourceHanSansKR-Bold.woff2') format('woff2');
+    src: url('../resources/fonts/SourceHanSansKR-Bold.woff2') format('woff');
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'Shanggu Serif';
+    src: url('../resources/fonts/ShangguSerif-Regular.woff2') format('woff2');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Shanggu Serif';
+    src: url('../resources/fonts/ShangguSerif-Bold.woff2') format('woff2');
     font-weight: 700;
 }
 
@@ -63,30 +77,47 @@
     font-weight: 700;
 }
 
-/* 默认字体 */
-body {
-    font-family: 'Inter', 'Source Han Sans SC', sans-serif;
+@font-face {
+    font-family: 'TeX Gyre Termes';
+    src: url('../resources/fonts/TEXGYRETERMES-REGULAR.otf') format('otf');
+    font-weight: 400;
 }
 
-/* 当 <html lang="ja-JP"> 时应用 */
-html:lang(ja-JP) * {
-    font-family: 'Inter', 'Source Han Sans JP', 'Source Han Sans SC', sans-serif;
+@font-face {
+    font-family: 'TeX Gyre Termes';
+    src: url('../resources/fonts/TEXGYRETERMES-BOLD.otf') format('otf');
+    font-weight: 700;
 }
 
-/* 当 <html lang="zh-TW"> 或 <html lang="zh-HK"> 时应用 */
-html:lang(zh-TW) *,
-html:lang(zh-HK) * {
-    font-family: 'Inter', 'Source Han Sans TC', 'Source Han Sans SC', sans-serif;
-}
+@layer base {
+    /* 2. 定义默认字体变量 */
+    :root {
+        --font-main: 'Inter', 'Source Han Sans SC', 'Source Han Sans JP', sans-serif;
+    }
 
-/* 当 <html lang="ko-KR"> 时应用 */
-html:lang(ko-KR) * {
-    font-family: 'Inter', 'Source Han Sans KR', 'Source Han Sans SC', sans-serif;
-}
+    /* 2. 语言切换：只改变量的值 */
+    /* 这样可以确保 body 及其所有子元素继承同一个变量 */
+    html:lang(ja-JP) {
+        --font-main: 'Inter', 'Source Han Sans JP', 'Source Han Sans SC', sans-serif;
+    }
 
-/* 当 <html lang="ko-KR"> 时应用 */
-html:lang(lzh) * {
-    font-family: 'Inter', 'Source Han Sans TC', 'Source Han Sans SC', sans-serif;
+    html:lang(zh-TW), 
+    html:lang(zh-HK) {
+        --font-main: 'Inter', 'Source Han Sans TC', 'Source Han Sans JP', 'Source Han Sans SC', sans-serif;
+    }
+
+    html:lang(ko-KR) {
+        --font-main: 'Inter', 'Source Han Sans KR', 'Source Han Sans JP', 'Source Han Sans SC', sans-serif;
+    }
+
+    html:lang(lzh) {
+        --font-main: 'TeX Gyre Termes', 'Shanggu Serif', 'Source Han Sans TC', serif;
+    }
+
+    /* 4. 应用到全局 */
+    body {
+        font-family: var(--font-main);
+    }
 }
 
 /* 激活 Overlay 时的显示 */

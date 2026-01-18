@@ -411,6 +411,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // 6. 语言模态框逻辑
     // ==========================================
     async function loadTranslations(langCode) {
+        const ticketCount = document.querySelector('.count-value');
+
+        const currencyEl = document.querySelector('.currency');
+        const amountEl = document.querySelector('.amount');
+
         // 1. 先改變 HTML lang
         document.documentElement.lang = langCode;
         // 2. 立即強制刷新一次時間格式
@@ -418,8 +423,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (langCode === 'lzh') {
             document.querySelector('.time').style.fontSize = '3vw';
+
+            // 文言文模式
+            ticketCount.textContent = '貳'
+
+            amountEl.textContent = '捌'; // 硬编码 8
+            currencyEl.textContent = '文';
+            
+            // 可选：微调样式，文言文可能不需要那么紧凑的 line-height
+            amountEl.style.lineHeight = "1.2";
         } else {
             document.querySelector('.time').style.fontSize = '3.5vw';
+
+            // 其他所有语言模式
+            ticketCount.textContent = '2'
+
+            amountEl.textContent = '8';
+            currencyEl.textContent = '¥';
+            
+            // 还原 line-height
+            amountEl.style.lineHeight = "0.8";
         }
 
         try {
