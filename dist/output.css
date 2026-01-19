@@ -312,6 +312,9 @@
   .w-\[95vw\] {
     width: 95vw;
   }
+  .w-\[min\(95vw\,calc\(90vh\*16\/9\)\)\] {
+    width: min(95vw, calc(90vh * 16 / 9));
+  }
   .w-full {
     width: 100%;
   }
@@ -523,6 +526,11 @@
   .select-none {
     -webkit-user-select: none;
     user-select: none;
+  }
+  .\*\:aspect-video {
+    :is(& > *) {
+      aspect-ratio: var(--aspect-video);
+    }
   }
   .hover\:brightness-95 {
     &:hover {

@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (htmlLang === 'lzh') {
             try {
                 const RLO = "\u202E";
+                const now = new Date(); // 确保 now 已定义
 
                 const lunarParts = new Intl.DateTimeFormat('zh-u-ca-chinese', {
                     year: 'numeric',
@@ -48,25 +49,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const getPart = (type) => lunarParts.find(p => p.type === type)?.value || "";
 
-                // 1. 修正干支计算 (确保 2026年 输出为 "乙巳")
-                // 天干：4为甲，5为乙... 0为庚
+                // 1. 干支纪年 (2026 -> 乙巳)
                 const gan = ["庚", "辛", "壬", "癸", "甲", "乙", "丙", "丁", "戊", "己"];
                 const zhi = ["申", "酉", "戌", "亥", "子", "丑", "寅", "卯", "辰", "巳", "午", "未"];
                 const y = now.getFullYear();
-                // 计算公式：2026 -> 乙巳
                 const yearGanzhi = gan[y % 10] + zhi[y % 12];
 
-                // 2. 月份雅称 (全繁体化)
+                // 2. 月份处理：直接使用“九月”、“十月”，仅将“冬月/腊月”等转为标准数字月名（若需要）
+                // Intl 默认在繁体下会输出“正月”、“二月”...“十二月”
                 let monthName = getPart('month');
-                const monthMap = {
-                    '正月': '孟春', '二月': '仲春', '三月': '季春',
-                    '四月': '孟夏', '五月': '仲夏', '六月': '季夏',
-                    '七月': '孟秋', '八月': '仲秋', '九月': '季秋',
-                    '十月': '孟冬', '十一月': '仲冬', '十二月': '季冬'
-                };
-                if (monthMap[monthName]) monthName = monthMap[monthName];
 
-                // 3. 传统日名化 (繁体化: 廿, 卅)
+                // 如果你希望“正月”也显示为“一月”，可以取消下面这行的注释
+                // if (monthName === '正月') monthName = '一月';
+
+                // 3. 日期处理 (初七, 廿一 等)
                 const dayNameRaw = getPart('day');
                 const dayInt = parseInt(dayNameRaw.replace(/\D/g, ''));
                 const traditionalDayMap = [
@@ -76,25 +72,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 ];
                 const traditionalDay = traditionalDayMap[dayInt] || dayNameRaw;
 
-                // 4. 七曜 (繁体化)
+                // 4. 七曜与时辰 (维持原有繁体)
                 const yaoMap = ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'];
                 const yao = yaoMap[now.getDay()];
 
-                // 5. 时辰与刻 (繁体化)
                 const hours = now.getHours();
                 const shichenMap = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
                 const shichenIndex = Math.floor((hours + 1) % 24 / 2);
                 const shichenName = shichenMap[shichenIndex];
-                // 刻的描述可以更文雅：初/正
                 const ke = (hours % 2 !== 0) ? '初' : '正';
 
-                // --- 最终赋值：注意全部使用繁体字 ---
-                dateElement.textContent = `${RLO}歲次${yearGanzhi} ${monthName}${traditionalDay}`; // 去掉多余空格
+                // --- 最终赋值 ---
+                // 格式：[RLO] 乙巳年九月初七日
+                dateElement.textContent = `${RLO}${yearGanzhi}年${monthName}${traditionalDay}日`;
+
                 weekElement.textContent = `${RLO}${yao}`;
                 timeElement.textContent = `${RLO}${shichenName}時${ke}`;
 
             } catch (e) {
-                console.error("文言文格式化失败:", e);
+                console.error("文言文格式化失敗:", e);
                 dateElement.textContent = "歲次載入中";
             }
         } else {
@@ -606,11 +602,13 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        langOverlay.addEventListener('click', () => {
-            if (langOverlay && langOverlay.classList.contains('active')) {
-                    closeModal(false); // 执行取消逻辑
+        langOverlay.addEventListener('click', (e) => {
+            if (e.target === langOverlay) {
+                if (langOverlay.classList.contains('active')) {
+                    closeModal(false); // 只有点到半透明遮罩区域才执行取消逻辑
                 }
-        })
+            }
+        });
 
         // 【新增：绑定语言选项的临时高亮逻辑】
         document.querySelectorAll('.lang-item').forEach(item => {
