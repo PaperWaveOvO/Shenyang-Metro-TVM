@@ -189,17 +189,17 @@
         transform 0.3s cubic-bezier(0.4, 0, 1, 1), 
         opacity 0.3s linear;
     
-    overflow: visible !important;
+    overflow: visible;
 }
 
 svg {
     /* 确保所有 SVG 默认不裁剪 */
-    overflow: visible !important;
+    overflow: visible;
 }
 
 #langModal svg {
     /* 核心：即使 path 超出了 viewBox 0.5 像素，也要显示出来 */
-    overflow: visible !important; 
+    overflow: visible;
     /* 确保它铺满模态框且不挡住点击 */
     position: absolute;
     inset: 0;

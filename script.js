@@ -231,8 +231,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // 3. 布局应用函数
     // ==========================================
     function applyPaths() {
-        const vw = window.innerWidth / 100;
-        const regularRadius = 1.5 * vw;
+        const containerWidth = tvmContainer.getBoundingClientRect().width;
+
+        const cqw = containerWidth / 100;
+        const regularRadius = 1.7 * cqw;
         const ENABLE_LIST_EXTENSION = false;
 
         if (tvmContainer) {
@@ -241,21 +243,22 @@ document.addEventListener("DOMContentLoaded", () => {
             const w = Math.floor(rect.width);
             const h = Math.floor(rect.height);
             if (w > 0) {
-                tvmContainer.style.clipPath = `path('${getSmoothRectPath(w, h, 1.5 * vw)}')`;
+                tvmContainer.style.clipPath = `path('${getSmoothRectPath(w, h, 1.5 * cqw)}')`;
             }
         }
 
         const configs = [
-            { sel: '.station-name-bg .bg', r: 2.1 * vw },
+            { sel: '.station-name-bg .bg', r: 100 * cqw },
             { sel: '.button-by-distance .bg', r: { tl: regularRadius, bl: regularRadius, tr: 0, br: 0 } },
             { sel: '.button-by-fare .bg', r: { tr: regularRadius, br: regularRadius, tl: 0, bl: 0 } },
             { sel: '.button-language .bg', r: regularRadius },
+            { sel: '.button-more .bg', r: regularRadius },
             { sel: '.button-top-up .bg', r: regularRadius },
             { sel: '.button-system-map .bg', r: regularRadius },
-            { sel: '.button-line-item[data-line="1"] .bg', r: { tl: regularRadius, bl: 0, tr: regularRadius, br: 0 } },
-            { sel: '.button-line-item[data-line="10"] .bg', r: { tl: 0, bl: regularRadius, tr: 0, br: regularRadius } },
+            { sel: '.button-line-item[data-line="1"] .bg', r: { tl: regularRadius, bl: 0, tr: regularRadius, br: 0 }, type: 'list-top' },
+            { sel: '.button-line-item[data-line="10"] .bg', r: { tl: 0, bl: regularRadius, tr: 0, br: regularRadius }, type: 'list-bottom' },
             { sel: '.button-line-item:not([data-line="1"]):not([data-line="10"]) .bg', r: 0 },
-            { sel: '#langModal > svg > .bg', r: 3 * vw },
+            { sel: '#langModal > svg > .bg', r: 1.7 * cqw + 1.75 * cqw },
             { sel: '.lang-item[data-lang="en-US"] .bg', r: { tl: regularRadius, tr: regularRadius, bl: 0, br: 0 }, type: 'list-top' },
             { sel: '.lang-item[data-lang="zh-TW"] .bg', r: { bl: regularRadius, br: regularRadius, tl: 0, tr: 0 }, type: 'list-bottom' },
             { sel: '.lang-item:not([data-lang="en-US"]):not([data-lang="zh-TW"]) .bg', r: 0, type: 'list-mid' },
@@ -263,8 +266,8 @@ document.addEventListener("DOMContentLoaded", () => {
             { sel: '.lang-cancel .bg', r: regularRadius },
             { sel: ".button-reset-by-distance .bg", r: regularRadius },
             { sel: ".button-pay-by-distance .bg", r: regularRadius },
-            { sel: '.ticket-selection .bg', r: 3 * vw },
-            { sel: '.fare-display .bg', r: 3 * vw },
+            { sel: '.ticket-selection .bg', r: 1.7 * cqw + 1.75 * cqw },
+            { sel: '.fare-display .bg', r: 1.7 * cqw + 1.75 * cqw },
             { sel: ".btn-counter .bg", r: regularRadius },
             { sel: ".btn-quick .bg", r: regularRadius },
         ];
@@ -277,39 +280,45 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!container || !svg) return;
 
                 const rect = container.getBoundingClientRect();
-
-                // 修改点：宽度可以 floor，但高度建议 round，并给一个最小值 1
                 let w = Math.floor(rect.width);
-                let h = Math.max(1, Math.round(rect.height)); // 确保至少有 1 像素高
+                let h = Math.max(1, Math.round(rect.height));
 
                 if (w < 1 || h < 1) return;
 
                 let drawH = h;
                 let viewBoxY = 0;
 
+                // --- 核心逻辑 ---
                 if (ENABLE_LIST_EXTENSION) {
-                    if (cfg.type === 'list-top') { drawH = h * 2.5; viewBoxY = 0; }
-                    else if (cfg.type === 'list-bottom') { drawH = h * 2.5; viewBoxY = drawH - h; }
+                    if (cfg.type === 'list-top') {
+                        drawH = h * 2.5; 
+                        viewBoxY = 0; 
+                    } else if (cfg.type === 'list-bottom') {
+                        drawH = h * 2.5; 
+                        viewBoxY = drawH - h; 
+                    }
                 }
 
-                // --- 核心修复逻辑 ---
-
-                // 1. ViewBox 严格等于容器尺寸，消除缩放感
+                // 1. 设置 ViewBox (决定窗口看哪一部分)
                 svg.setAttribute('viewBox', `0 ${viewBoxY} ${w} ${h}`);
 
-                // 2. 物理尺寸保持 100%，确保坐标 1:1
+                // 2. 物理尺寸强制对齐容器
                 svg.style.width = '100%';
                 svg.style.height = '100%';
                 svg.style.left = '0';
                 svg.style.top = '0';
 
-                // 3. 关键：允许 SVG 内部内容溢出到 viewBox 之外显示（抗锯齿像素）
-                svg.style.overflow = 'visible';
+                // 3. 【核心修复点】使用 clipPath 强制物理裁剪
+                // 即使 CSS 设置了 overflow: visible !important，inset(0) 也会把多出的 1.5 倍高度切掉
+                if (ENABLE_LIST_EXTENSION && (cfg.type === 'list-top' || cfg.type === 'list-bottom')) {
+                    svg.style.clipPath = 'inset(0px)'; 
+                    svg.style.overflow = 'hidden'; 
+                } else {
+                    svg.style.clipPath = 'none';
+                    svg.style.overflow = 'visible'; // 普通按钮保持 visible 解决手机切边
+                }
 
-                // 4. 渲染精度优化
                 pathEl.style.shapeRendering = 'geometricPrecision';
-
-                // 绘制路径
                 pathEl.setAttribute('d', getSmoothRectPath(w, drawH, cfg.r));
             });
         });
@@ -425,11 +434,11 @@ document.addEventListener("DOMContentLoaded", () => {
         updateDateTime();
 
         if (langCode === 'lzh') {
-            document.querySelector('.time').style.fontSize = '2.5vw';
+            document.querySelector('.time').style.fontSize = '2.5cqw';
 
             // 文言文模式
             ticketCount.textContent = '貳';
-            ticketCount.style.fontSize = '3vw';
+            ticketCount.style.fontSize = '3cqw';
 
             minusElement.src = './resources/button_contents/lzh_minus.svg';
             plusElement.src = './resources/button_contents/lzh_plus.svg';
@@ -437,43 +446,43 @@ document.addEventListener("DOMContentLoaded", () => {
             plus2Element.src = './resources/button_contents/lzh_plus_2.svg';
 
             [minusElement, plusElement].forEach(el => {
-                el.style.width = '1.8vw';
-                el.style.height = '1.8vw';
+                el.style.width = '1.8cqw';
+                el.style.height = '1.8cqw';
             });
 
             amountEl.textContent = '捌'; // 硬编码 8
-            amountEl.style.fontSize = '3vw';
+            amountEl.style.fontSize = '3cqw';
             currencyEl.textContent = '文';
-            currencyEl.style.fontSize = '2vw';
+            currencyEl.style.fontSize = '2cqw';
 
             // 可选：微调样式，文言文可能不需要那么紧凑的 line-height
             amountEl.style.lineHeight = "1.2";
         } else {
-            document.querySelector('.time').style.fontSize = '3.5vw';
+            document.querySelector('.time').style.fontSize = '3.5cqw';
 
             // 其他所有语言模式
             ticketCount.textContent = '2';
-            ticketCount.style.fontSize = '3.5vw';
+            ticketCount.style.fontSize = '3.5cqw';
 
             minusElement.src = './resources/button_contents/minus.svg';
             plusElement.src = './resources/button_contents/plus.svg';
             minus2Element.src = './resources/button_contents/minus_2.svg';
             plus2Element.src = './resources/button_contents/plus_2.svg';
 
-            minusElement.classList.remove('w-[1.8vw]');
-            minusElement.classList.add('w-[1.5vw]', 'h-[1.5vw]');
-            plusElement.classList.remove('w-[1.8vw]');
-            plusElement.classList.add('w-[1.5vw]', 'h-[1.5vw]');
+            minusElement.classList.remove('w-[1.8cqw]');
+            minusElement.classList.add('w-[1.5cqw]', 'h-[1.5cqw]');
+            plusElement.classList.remove('w-[1.8cqw]');
+            plusElement.classList.add('w-[1.5cqw]', 'h-[1.5cqw]');
 
             [minusElement, plusElement].forEach(el => {
-                el.style.width = '1.5vw';
-                el.style.height = '1.5vw';
+                el.style.width = '1.5cqw';
+                el.style.height = '1.5cqw';
             });
 
             amountEl.textContent = '8';
-            amountEl.style.fontSize = '3.5vw';
+            amountEl.style.fontSize = '3.5cqw';
             currencyEl.textContent = '¥';
-            currencyEl.style.fontSize = '2.5vw';
+            currencyEl.style.fontSize = '2.5cqw';
 
             // 还原 line-height
             amountEl.style.lineHeight = "0.8";
