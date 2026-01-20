@@ -266,7 +266,8 @@ document.addEventListener("DOMContentLoaded", () => {
             { sel: '.lang-cancel .bg', r: regularRadius },
             { sel: ".button-reset-by-distance .bg", r: regularRadius },
             { sel: ".button-pay-by-distance .bg", r: regularRadius },
-            { sel: '.ticket-selection .bg', r: 1.7 * cqw + 1.75 * cqw },
+            { sel: '.ticket-selection .bg', r: regularRadius + 1.75 * cqw },
+            { sel: '.unit-price-selection .bg', r: regularRadius + 1.75 * cqw },
             { sel: '.fare-display .bg', r: 1.7 * cqw + 1.75 * cqw },
             { sel: ".btn-counter .bg", r: regularRadius },
             { sel: ".btn-quick .bg", r: regularRadius },
@@ -274,7 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         configs.forEach(cfg => {
             document.querySelectorAll(cfg.sel).forEach(pathEl => {
-                const container = pathEl.closest('.station-name-bg, .tvm-button, .lang-modal, .btn-quick, .btn-counter, .lang-item, .distance-panel-divider, .ticket-selection, .fare-display');
+                const container = pathEl.closest('.station-name-bg, .tvm-button, .lang-modal, .btn-quick, .btn-counter, .lang-item, .distance-panel-divider, .ticket-selection, .unit-price-selection, .fare-display');
                 const svg = pathEl.closest('svg');
 
                 if (!container || !svg) return;

@@ -120,6 +120,12 @@
     }
 }
 
+/* 只有当页面总语言为 lzh 时，才触发内部西文的位移 */
+html:lang(lzh) [lang^="en"] {
+    display: inline-block;    /* 必须设为 inline-block 或 block 才能应用 transform */
+    transform: translateY(-0.15cqw); /* 根据视觉需要调整负值，上移一定的 cqw */
+}
+
 /* 激活 Overlay 时的显示 */
 #langOverlay.active {
     display: flex;

@@ -584,6 +584,10 @@
     font-family: var(--font-main);
   }
 }
+html:lang(lzh) [lang^="en"] {
+  display: inline-block;
+  transform: translateY(-0.15cqw);
+}
 #langOverlay.active {
   display: flex;
 }
