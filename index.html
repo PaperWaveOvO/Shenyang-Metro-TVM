@@ -293,146 +293,176 @@
                         </div>
                     </div>
                 </div>
-                <div id="screen-by-amount" class="tvm-body flex-1 items-center justify-center bg-white">
-                    <div class="flex items-center gap-[1.75cqw]">
-                        <!-- 票数选择区域 -->
-                        <div
-                            class="ticket-selection relative flex flex-col items-center w-[20.5cqw] p-[1.75cqw] shrink-0">
-                            <!-- 背景 SVG：现在它会相对于已缩进的容器定位，圆角将可见 -->
-                            <svg class="absolute inset-0 w-full h-full pointer-events-none"
-                                style="filter: drop-shadow(0 0 0.8cqw rgba(0,0,0,0.15));">
-                                <path class="bg" fill="#ffffff" d="" />
-                            </svg>
+                <div id="screen-by-amount"
+                    class="tvm-body flex flex-col flex-1 items-center justify-center bg-white">
+                    <div class="flex flex-col gap-[1.75cqw] p-[1.75cqw] w-auto">
+                        <div class="stretch grow"></div>
 
-                            <div class="section-title relative text-[2cqw] font-bold mb-[1cqw] z-10"
-                                data-i18n="page.main.panel.ticket_count.label">
-                                票数
-                            </div>
+                        <div class="flex items-center gap-[1.75cqw]">
+                            <!-- 票数选择区域 -->
+                            <div
+                                class="ticket-selection relative flex flex-col items-center w-[20.5cqw] p-[1.75cqw] shrink-0">
+                                <svg class="absolute inset-0 w-full h-full pointer-events-none"
+                                    style="filter: drop-shadow(0 0 0.8cqw rgba(0,0,0,0.15));">
+                                    <path class="bg" fill="#ffffff" d="" />
+                                </svg>
 
-                            <div class="counter-main relative flex items-center justify-between w-full mb-[1cqw] z-10">
-                                <button
-                                    class="btn-counter btn-minus tvm-button relative w-[4.4cqw] h-[4.4cqw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
-                                    data-value="-">
-                                    <svg class="absolute inset-0 w-full h-full">
-                                        <path class="bg fill-[#e8e8e8]" d="" />
-                                    </svg>
-                                    <img src="./resources/button_contents/minus.svg"
-                                        class="minus relative z-10 w-[1.5cqw] h-[1.5cqw]" alt="-">
-                                </button>
-
-                                <span class="count-value text-[3.5cqw] font-bold" style="line-height: 1;">2</span>
-
-                                <button
-                                    class="btn-counter btn-plus tvm-button relative w-[4.4cqw] h-[4.4cqw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
-                                    data-value="+">
-                                    <svg class="absolute inset-0 w-full h-full">
-                                        <path class="bg fill-[#e8e8e8]" d="" />
-                                    </svg>
-                                    <img src="./resources/button_contents/plus.svg"
-                                        class="plus relative z-10 w-[1.5cqw] h-[1.5cqw]" alt="+">
-                                </button>
-                            </div>
-
-                            <div class="counter-quick relative flex gap-[1cqw] w-full z-10">
-                                <button
-                                    class="btn-quick tvm-button relative flex-1 h-[4.4cqw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
-                                    data-value="-2">
-                                    <svg class="absolute inset-0 w-full h-full">
-                                        <path class="bg fill-[#e8e8e8]" d="" />
-                                    </svg>
-                                    <img src="./resources/button_contents/minus_2.svg"
-                                        class="minus-2 relative z-10 h-[2cqw]" alt="-2">
-                                </button>
-                                <button
-                                    class="btn-quick tvm-button relative flex-1 h-[4.4cqw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
-                                    data-value="+2">
-                                    <svg class="absolute inset-0 w-full h-full">
-                                        <path class="bg fill-[#e8e8e8]" d="" />
-                                    </svg>
-                                    <img src="./resources/button_contents/plus_2.svg"
-                                        class="plus-2 relative z-10 h-[2cqw]" alt="+2">
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- 单价选择区域 -->
-                        <div
-                            class="unit-price-selection relative flex flex-col items-center w-[20.5cqw] p-[1.75cqw] shrink-0">
-                            <svg class="absolute inset-0 w-full h-full pointer-events-none"
-                                style="filter: drop-shadow(0 0 0.8cqw rgba(0,0,0,0.15));">
-                                <path class="bg" fill="#ffffff" d="" />
-                            </svg>
-
-                            <div class="section-title relative text-[2cqw] font-bold mb-[1cqw] z-10"
-                                data-i18n="page.main.panel.unit-price.label">
-                                单价
-                            </div>
-
-                            <div class="counter-main relative flex items-center justify-between w-full mb-[1cqw] z-10">
-                                <button
-                                    class="btn-counter btn-minus tvm-button relative w-[4.4cqw] h-[4.4cqw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
-                                    data-value="-">
-                                    <svg class="absolute inset-0 w-full h-full">
-                                        <path class="bg fill-[#e8e8e8]" d="" />
-                                    </svg>
-                                    <img src="./resources/button_contents/minus.svg"
-                                        class="minus relative z-10 w-[1.5cqw] h-[1.5cqw]" alt="-">
-                                </button>
-
-                                <div class="price-wrapper relative flex items-baseline mt-[0.5cqw] z-10">
-                                    <span class="currency text-[2.5cqw] font-bold">¥</span>
-                                    <span class="amount text-[3.5cqw] font-bold leading-none"
-                                        style="line-height: 0.8;">8</span>
+                                <div class="section-title relative text-[2cqw] font-bold mb-[1cqw] z-10"
+                                    data-i18n="page.main.panel.ticket_count.label">
+                                    票数
                                 </div>
 
-                                <button
-                                    class="btn-counter btn-plus tvm-button relative w-[4.4cqw] h-[4.4cqw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
-                                    data-value="+">
-                                    <svg class="absolute inset-0 w-full h-full">
-                                        <path class="bg fill-[#e8e8e8]" d="" />
-                                    </svg>
-                                    <img src="./resources/button_contents/plus.svg"
-                                        class="plus relative z-10 w-[1.5cqw] h-[1.5cqw]" alt="+">
-                                </button>
+                                <div
+                                    class="counter-main relative flex items-center justify-between w-full mb-[1cqw] z-10">
+                                    <button
+                                        class="btn-counter btn-minus tvm-button relative w-[4.4cqw] h-[4.4cqw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
+                                        data-value="-">
+                                        <svg class="absolute inset-0 w-full h-full">
+                                            <path class="bg fill-[#e8e8e8]" d="" />
+                                        </svg>
+                                        <img src="./resources/button_contents/minus.svg"
+                                            class="minus relative z-10 w-[1.5cqw] h-[1.5cqw]" alt="-">
+                                    </button>
+
+                                    <span class="count-value text-[3.5cqw] font-bold" style="line-height: 1;">2</span>
+
+                                    <button
+                                        class="btn-counter btn-plus tvm-button relative w-[4.4cqw] h-[4.4cqw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
+                                        data-value="+">
+                                        <svg class="absolute inset-0 w-full h-full">
+                                            <path class="bg fill-[#e8e8e8]" d="" />
+                                        </svg>
+                                        <img src="./resources/button_contents/plus.svg"
+                                            class="plus relative z-10 w-[1.5cqw] h-[1.5cqw]" alt="+">
+                                    </button>
+                                </div>
+
+                                <div class="counter-quick relative flex gap-[1cqw] w-full z-10">
+                                    <button
+                                        class="btn-quick tvm-button relative flex-1 h-[4.4cqw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
+                                        data-value="-2">
+                                        <svg class="absolute inset-0 w-full h-full">
+                                            <path class="bg fill-[#e8e8e8]" d="" />
+                                        </svg>
+                                        <img src="./resources/button_contents/minus_2.svg"
+                                            class="minus-2 relative z-10 h-[2cqw]" alt="-2">
+                                    </button>
+                                    <button
+                                        class="btn-quick tvm-button relative flex-1 h-[4.4cqw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
+                                        data-value="+2">
+                                        <svg class="absolute inset-0 w-full h-full">
+                                            <path class="bg fill-[#e8e8e8]" d="" />
+                                        </svg>
+                                        <img src="./resources/button_contents/plus_2.svg"
+                                            class="plus-2 relative z-10 h-[2cqw]" alt="+2">
+                                    </button>
+                                </div>
                             </div>
 
-                            <div class="counter-quick relative flex gap-[1cqw] w-full z-10">
-                                <button
-                                    class="btn-quick tvm-button relative flex-1 h-[4.4cqw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
-                                    data-value="-2">
-                                    <svg class="absolute inset-0 w-full h-full">
-                                        <path class="bg fill-[#e8e8e8]" d="" />
-                                    </svg>
-                                    <img src="./resources/button_contents/minus_2.svg"
-                                        class="minus-2 relative z-10 h-[2cqw]" alt="-2">
-                                </button>
-                                <button
-                                    class="btn-quick tvm-button relative flex-1 h-[4.4cqw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
-                                    data-value="+2">
-                                    <svg class="absolute inset-0 w-full h-full">
-                                        <path class="bg fill-[#e8e8e8]" d="" />
-                                    </svg>
-                                    <img src="./resources/button_contents/plus_2.svg"
-                                        class="plus-2 relative z-10 h-[2cqw]" alt="+2">
-                                </button>
+                            <!-- 单价选择区域 -->
+                            <div
+                                class="unit-price-selection relative flex flex-col items-center w-[20.5cqw] p-[1.75cqw] shrink-0">
+                                <svg class="absolute inset-0 w-full h-full pointer-events-none"
+                                    style="filter: drop-shadow(0 0 0.8cqw rgba(0,0,0,0.15));">
+                                    <path class="bg" fill="#ffffff" d="" />
+                                </svg>
+
+                                <div class="section-title relative text-[2cqw] font-bold mb-[1cqw] z-10"
+                                    data-i18n="page.main.panel.unit-price.label">
+                                    单价
+                                </div>
+
+                                <div
+                                    class="counter-main relative flex items-center justify-between w-full mb-[1cqw] z-10">
+                                    <button
+                                        class="btn-counter btn-minus tvm-button relative w-[4.4cqw] h-[4.4cqw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
+                                        data-value="-">
+                                        <svg class="absolute inset-0 w-full h-full">
+                                            <path class="bg fill-[#e8e8e8]" d="" />
+                                        </svg>
+                                        <img src="./resources/button_contents/minus.svg"
+                                            class="minus relative z-10 w-[1.5cqw] h-[1.5cqw]" alt="-">
+                                    </button>
+
+                                    <div class="price-wrapper relative flex items-baseline mt-[0.5cqw] z-10">
+                                        <span class="currency text-[2.5cqw] font-bold">¥</span>
+                                        <span class="amount text-[3.5cqw] font-bold leading-none"
+                                            style="line-height: 0.8;">2</span>
+                                    </div>
+
+                                    <button
+                                        class="btn-counter btn-plus tvm-button relative w-[4.4cqw] h-[4.4cqw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
+                                        data-value="+">
+                                        <svg class="absolute inset-0 w-full h-full">
+                                            <path class="bg fill-[#e8e8e8]" d="" />
+                                        </svg>
+                                        <img src="./resources/button_contents/plus.svg"
+                                            class="plus relative z-10 w-[1.5cqw] h-[1.5cqw]" alt="+">
+                                    </button>
+                                </div>
+
+                                <div class="counter-quick relative flex gap-[1cqw] w-full z-10">
+                                    <button
+                                        class="btn-quick tvm-button relative flex-1 h-[4.4cqw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
+                                        data-value="-2">
+                                        <svg class="absolute inset-0 w-full h-full">
+                                            <path class="bg fill-[#e8e8e8]" d="" />
+                                        </svg>
+                                        <img src="./resources/button_contents/minus_2.svg"
+                                            class="minus-2 relative z-10 h-[2cqw]" alt="-2">
+                                    </button>
+                                    <button
+                                        class="btn-quick tvm-button relative flex-1 h-[4.4cqw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90"
+                                        data-value="+2">
+                                        <svg class="absolute inset-0 w-full h-full">
+                                            <path class="bg fill-[#e8e8e8]" d="" />
+                                        </svg>
+                                        <img src="./resources/button_contents/plus_2.svg"
+                                            class="plus-2 relative z-10 h-[2cqw]" alt="+2">
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- 总金额显示区域 -->
-                    <div class="fare-display relative flex flex-col items-center p-[1.5cqw] shrink-0">
-                        <svg class="absolute inset-0 w-full h-full pointer-events-none"
-                            style="filter: drop-shadow(0 0 0.8cqw rgba(0,0,0,0.15));">
-                            <path class="bg" fill="#ffffff" d="" />
-                        </svg>
 
-                        <div class="section-title relative text-[2cqw] font-bold z-10"
-                            data-i18n="page.main.panel.total_fare.label">
-                            应付总金额
+                        <!-- 总金额显示区域 -->
+                        <div class="fare-display relative flex flex-col items-center p-[1.5cqw] shrink-0 w-full">
+                            <svg class="absolute inset-0 w-full h-full pointer-events-none"
+                                style="filter: drop-shadow(0 0 0.8cqw rgba(0,0,0,0.15));">
+                                <path class="bg" fill="#ffffff" d="" />
+                            </svg>
+
+                            <div class="section-title relative text-[2cqw] font-bold z-10"
+                                data-i18n="page.main.panel.total_fare.label">
+                                应付总金额
+                            </div>
+                            <div class="price-wrapper relative flex items-baseline mt-[0.5cqw] z-10">
+                                <span class="currency text-[2.5cqw] font-bold">¥</span>
+                                <span class="amount text-[3.5cqw] font-bold leading-none"
+                                    style="line-height: 0.8;">8</span>
+                            </div>
                         </div>
-                        <div class="price-wrapper relative flex items-baseline mt-[0.5cqw] z-10">
-                            <span class="currency text-[2.5cqw] font-bold">¥</span>
-                            <span class="amount text-[3.5cqw] font-bold leading-none" style="line-height: 0.8;">8</span>
+
+                        <div class="stretch grow"></div>
+
+                        <!-- 底部操作按钮组 -->
+                        <div class="action-group flex shrink-0 gap-[1.75cqw] w-full">
+                            <button
+                                class="tvm-button button-pay-by-distance relative flex-1 h-[4.4cqw] items-center justify-center shrink-0 cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90">
+                                <svg class="absolute inset-0 w-full h-full">
+                                    <path class="bg fill-[#e8e8e8]" d="" />
+                                </svg>
+                                <span class="relative z-10 text-[2cqw] text-black"
+                                    data-i18n="page.main.button.reset.label">重置</span>
+                            </button>
+
+                            <button
+                                class="tvm-button button-pay-by-distance relative flex-1 h-[4.4cqw] flex items-center justify-center cursor-pointer transition-all duration-300 hover:brightness-95 active:brightness-90">
+                                <svg class="absolute inset-0 w-full h-full">
+                                    <path class="bg fill-[#2e6aff]" d="" />
+                                </svg>
+                                <span class="relative z-10 text-[2cqw] text-white"
+                                    data-i18n="page.main.button.pay.label">支付</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -531,8 +561,7 @@
                                     <path class="bg fill-[#e8e8e8]" d="" />
                                 </svg>
                                 <span class="relative z-10 text-[2cqw]"
-                                    data-i18n="modal.language.button.cancel.label">取消 /
-                                    Cancel</span>
+                                    data-i18n="modal.language.button.cancel.label">取消 / Cancel</span>
                             </button>
                         </div>
                     </div>

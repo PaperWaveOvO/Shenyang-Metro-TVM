@@ -447,8 +447,8 @@ document.addEventListener("DOMContentLoaded", () => {
             plus2Element.src = './resources/button_contents/lzh_plus_2.svg';
 
             [minusElement, plusElement].forEach(el => {
-                el.style.width = '1.8cqw';
-                el.style.height = '1.8cqw';
+                el.style.width = '2cqw';
+                el.style.height = '2cqw';
             });
 
             amountEl.textContent = '捌'; // 硬编码 8

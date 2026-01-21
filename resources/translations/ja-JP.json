@@ -12,6 +12,7 @@
     "modal.language.button.ok.label": "確定 / OK",
     "modal.language.button.cancel.label": "キャンセル / Cancel",
     "page.main.panel.ticket_count.label": "枚数",
+    "page.main.panel.unit-price.label": "単価",
     "page.main.panel.total_fare.label": "合計金額",
     "page.main.button.reset.label": "リセット",
     "page.main.button.pay.label": "支払",

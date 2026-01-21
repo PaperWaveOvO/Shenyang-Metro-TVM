@@ -12,6 +12,7 @@
     "modal.language.button.ok.label": "확인 / OK",
     "modal.language.button.cancel.label": "취소 / Cancel",
     "page.main.panel.ticket_count.label": "매수",
+    "page.main.panel.unit-price.label": "단가",
     "page.main.panel.total_fare.label": "총 결제금액",
     "page.main.button.reset.label": "초기화",
     "page.main.button.pay.label": "결제",

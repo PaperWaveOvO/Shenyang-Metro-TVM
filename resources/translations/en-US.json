@@ -13,6 +13,7 @@
     "modal.language.button.ok.label": "OK",
     "modal.language.button.cancel.label": "Cancel",
     "page.main.panel.ticket_count.label": "Quantity",
+    "page.main.panel.unit-price.label": "Unit price",
     "page.main.panel.total_fare.label": "Total amount",
     "page.main.button.reset.label": "Reset",
     "page.main.button.pay.label": "Pay",

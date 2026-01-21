@@ -13,6 +13,7 @@
     "modal.language.button.ok.label": "确定 / OK",
     "modal.language.button.cancel.label": "取消 / Cancel",
     "page.main.panel.ticket_count.label": "票数",
+    "page.main.panel.unit-price.label": "单价",
     "page.main.panel.total_fare.label": "应付总金额",
     "page.main.button.reset.label": "重置",
     "page.main.button.pay.label": "支付",
