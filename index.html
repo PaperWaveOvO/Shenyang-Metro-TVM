@@ -87,16 +87,48 @@
 
                 <div class="w-[1.5cqw]"></div>
 
-                <!-- 充值按钮：全圆角 -->
-                <button
-                    class="tvm-button button-more relative w-[22cqw] h-[4.4cqw] flex items-center justify-center cursor-pointer overflow-hidden transition-all duration-300 hover:brightness-95 active:brightness-90">
-                    <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 708 181"
-                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <path class="bg fill-[#e8e8e8] transition-colors duration-300" d="" />
-                    </svg>
-                    <span class="relative z-10 text-[2cqw] text-black select-none"
-                        data-i18n="page.main.button.more.label">更多</span>
-                </button>
+                <div class="more-menu-wrapper relative shrink-0">
+                    <!-- 1. 变形背景板（Morphing Background） -->
+                    <!-- 它会从按钮的大小 1:1 开始，最终扩张到包含 3 个按钮的尺寸 -->
+                    <div id="more-morph-bg" class="absolute pointer-events-none z-0"
+                        style="left: 0; top: 0; width: 22cqw; height: 4.4cqw; opacity: 0;">
+                        <svg class="w-full h-full" style="overflow: visible;">
+                            <!-- 阴影在这里过渡 -->
+                            <path class="bg fill-white transition-all duration-500"
+                                style="filter: drop-shadow(0 0 0 rgba(0,0,0,0));" d="" />
+                        </svg>
+                    </div>
+
+                    <!-- 2. 主按钮（Anchor） -->
+                    <button id="more-btn-trigger"
+                        class="tvm-button relative w-[22cqw] h-[4.4cqw] flex items-center justify-center cursor-pointer z-20">
+                        <svg class="absolute inset-0 w-full h-full">
+                            <path class="bg fill-[#e8e8e8]" d="" />
+                        </svg>
+                        <!-- 内部文字容器，方便做淡入淡出切换 -->
+                        <div class="relative z-10 w-full h-full flex items-center justify-center">
+                            <span class="more-label-text absolute text-[2cqw] transition-all duration-300">更多</span>
+                        </div>
+                    </button>
+
+                    <!-- 3. 随动选项列表（Revealed Buttons） -->
+                    <!-- 这里的 top 计算：按钮 4.4 + 间距 1.5 = 5.9cqw -->
+                    <div id="more-options-list"
+                        class="absolute left-0 top-[5.9cqw] flex flex-col gap-[1.5cqw] opacity-0 pointer-events-none z-10 w-[22cqw] transition-all duration-500">
+                        <button class="tvm-button relative w-full h-[4.4cqw] flex items-center justify-center">
+                            <svg class="absolute inset-0 w-full h-full">
+                                <path class="bg fill-[#e8e8e8]" d="" />
+                            </svg>
+                            <span class="relative z-10 text-[2cqw]">设置</span>
+                        </button>
+                        <button class="tvm-button relative w-full h-[4.4cqw] flex items-center justify-center">
+                            <svg class="absolute inset-0 w-full h-full">
+                                <path class="bg fill-[#e8e8e8]" d="" />
+                            </svg>
+                            <span class="relative z-10 text-[2cqw]">帮助</span>
+                        </button>
+                    </div>
+                </div>
 
                 <div class="stretch"></div>
             </nav>
@@ -293,8 +325,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="screen-by-amount"
-                    class="tvm-body flex flex-col flex-1 items-center justify-center bg-white">
+                <div id="screen-by-amount" class="tvm-body flex flex-col flex-1 items-center justify-center bg-white">
                     <div class="flex flex-col gap-[1.75cqw] p-[1.75cqw] w-auto">
                         <div class="stretch grow"></div>
 

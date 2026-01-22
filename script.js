@@ -252,8 +252,9 @@ document.addEventListener("DOMContentLoaded", () => {
             { sel: '.button-by-distance .bg', r: { tl: regularRadius, bl: regularRadius, tr: 0, br: 0 } },
             { sel: '.button-by-fare .bg', r: { tr: regularRadius, br: regularRadius, tl: 0, bl: 0 } },
             { sel: '.button-language .bg', r: regularRadius },
-            { sel: '.button-more .bg', r: regularRadius },
+            { sel: '#more-btn-trigger .bg', r: regularRadius },
             { sel: '.button-top-up .bg', r: regularRadius },
+            { sel: '.button-ticket-validation .bg', r: regularRadius },
             { sel: '.button-system-map .bg', r: regularRadius },
             { sel: '.button-line-item[data-line="1"] .bg', r: { tl: regularRadius, bl: 0, tr: regularRadius, br: 0 }, type: 'list-top' },
             { sel: '.button-line-item[data-line="10"] .bg', r: { tl: 0, bl: regularRadius, tr: 0, br: regularRadius }, type: 'list-bottom' },
@@ -292,11 +293,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 // --- 核心逻辑 ---
                 if (ENABLE_LIST_EXTENSION) {
                     if (cfg.type === 'list-top') {
-                        drawH = h * 2.5; 
-                        viewBoxY = 0; 
+                        drawH = h * 2.5;
+                        viewBoxY = 0;
                     } else if (cfg.type === 'list-bottom') {
-                        drawH = h * 2.5; 
-                        viewBoxY = drawH - h; 
+                        drawH = h * 2.5;
+                        viewBoxY = drawH - h;
                     }
                 }
 
@@ -312,8 +313,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 // 3. 【核心修复点】使用 clipPath 强制物理裁剪
                 // 即使 CSS 设置了 overflow: visible !important，inset(0) 也会把多出的 1.5 倍高度切掉
                 if (ENABLE_LIST_EXTENSION && (cfg.type === 'list-top' || cfg.type === 'list-bottom')) {
-                    svg.style.clipPath = 'inset(0px)'; 
-                    svg.style.overflow = 'hidden'; 
+                    svg.style.clipPath = 'inset(0px)';
+                    svg.style.overflow = 'hidden';
                 } else {
                     svg.style.clipPath = 'none';
                     svg.style.overflow = 'visible'; // 普通按钮保持 visible 解决手机切边
@@ -384,6 +385,99 @@ document.addEventListener("DOMContentLoaded", () => {
 
         currentMode = nextMode;
     }
+
+    // --- 关键数值预设 (cqw) ---
+    const PAD = 1.75;
+    const BTN_W = 22;
+    const BTN_H = 4.4;
+    const GAP = 1.5;
+    const OPTION_COUNT = 2;
+    const FINAL_H = PAD + BTN_H + (GAP + BTN_H) * OPTION_COUNT + PAD;
+    const FINAL_W = BTN_W + PAD * 2;
+
+    let isMoreMenuOpen = false;
+    let morphFrameId = null;
+
+    function toggleMoreMenu() {
+        const bg = document.getElementById('more-morph-bg');
+        const list = document.getElementById('more-options-list');
+        const label = document.querySelector('.more-label-text');
+        const container = document.querySelector('.tvm-container');
+        const cqw = container.getBoundingClientRect().width / 100;
+
+        isMoreMenuOpen = !isMoreMenuOpen;
+
+        if (isMoreMenuOpen) {
+            bg.style.visibility = "visible";
+            bg.style.opacity = "1";
+            // 使用非常平滑的贝塞尔曲线
+            bg.style.transition = "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)";
+
+            bg.style.width = `${FINAL_W * cqw}px`;
+            bg.style.height = `${FINAL_H * cqw}px`;
+            bg.style.left = `${-PAD * cqw}px`;
+            bg.style.top = `${-PAD * cqw}px`;
+            bg.querySelector('path').style.filter = "drop-shadow(0 0.5cqw 1.5cqw rgba(0,0,0,0.2))";
+
+            label.style.opacity = "0";
+            setTimeout(() => {
+                label.textContent = "返回";
+                label.style.opacity = "1";
+            }, 200);
+
+            list.style.opacity = "1";
+            list.style.pointerEvents = "auto";
+            list.style.transform = "translateY(0)";
+        } else {
+            bg.style.transition = "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)";
+            bg.style.width = `${BTN_W * cqw}px`;
+            bg.style.height = `${BTN_H * cqw}px`;
+            bg.style.left = "0px";
+            bg.style.top = "0px";
+            bg.style.opacity = "0";
+            bg.querySelector('path').style.filter = "drop-shadow(0 0 0 rgba(0,0,0,0))";
+
+            label.style.opacity = "0";
+            setTimeout(() => {
+                label.textContent = "更多";
+                label.style.opacity = "1";
+                if (!isMoreMenuOpen) bg.style.visibility = "hidden";
+            }, 200);
+
+            list.style.opacity = "0";
+            list.style.pointerEvents = "none";
+            list.style.transform = "translateY(-10px)";
+        }
+        startMorphTracking();
+    }
+
+    // 启动实时路径重绘
+    function startMorphTracking() {
+        if (morphFrameId) cancelAnimationFrame(morphFrameId);
+        const bg = document.getElementById('more-morph-bg');
+        const path = bg.querySelector('path');
+        const container = document.querySelector('.tvm-container');
+
+        function update() {
+            const rect = bg.getBoundingClientRect();
+            const cqw = container.getBoundingClientRect().width / 100;
+            // 这里的圆角需要根据背景大小动态适配，建议用 2.1 * cqw
+            const d = getSmoothRectPath(rect.width, rect.height, 2.1 * cqw);
+            path.setAttribute('d', d);
+
+            // 如果动画还在跑（通过检查 opacity 或宽度是否到达目标）
+            if (isMoreMenuOpen || parseFloat(bg.style.opacity) > 0) {
+                morphFrameId = requestAnimationFrame(update);
+            }
+        }
+        update();
+    }
+
+    // 【关键：绑定点击事件】
+    document.getElementById('more-btn-trigger').addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleMoreMenu();
+    });
 
     // ==========================================
     // 5. 点击互斥逻辑
